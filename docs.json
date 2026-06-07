@@ -57,7 +57,8 @@
               "guides/concepts",
               "guides/pair-whatsapp",
               "guides/send-message",
-              "guides/webhooks"
+              "guides/webhooks",
+              "guides/ai-readable-docs"
             ]
           }
         ]
@@ -75,8 +76,73 @@
             ]
           },
           {
-            "group": "Reference",
-            "openapi": "openapi/whatsapp-use.yaml"
+            "group": "Account",
+            "openapi": "openapi/whatsapp-use.yaml",
+            "expanded": false,
+            "pages": [
+              "GET /v1/me",
+              "GET /v1/usage"
+            ]
+          },
+          {
+            "group": "Connections and sync",
+            "openapi": "openapi/whatsapp-use.yaml",
+            "expanded": false,
+            "pages": [
+              "GET /v1/whatsapp/status",
+              "POST /v1/whatsapp/pair",
+              "GET /v1/whatsapp/pair/status",
+              "GET /v1/whatsapp/sync",
+              "GET /v1/whatsapp/conversations",
+              "GET /v1/whatsapp/contacts",
+              "GET /v1/whatsapp/conversations/{conversation_id}/messages",
+              "GET /v1/whatsapp/media/{message_id}",
+              "POST /v1/whatsapp/unlink"
+            ]
+          },
+          {
+            "group": "Messages",
+            "openapi": "openapi/whatsapp-use.yaml",
+            "expanded": false,
+            "pages": [
+              "POST /v1/whatsapp/messages/send",
+              "POST /v1/whatsapp/messages/react",
+              "POST /v1/whatsapp/messages/edit",
+              "POST /v1/whatsapp/messages/delete",
+              "POST /v1/whatsapp/messages/read",
+              "POST /v1/whatsapp/conversations/{conversation_id}/read"
+            ]
+          },
+          {
+            "group": "Groups",
+            "openapi": "openapi/whatsapp-use.yaml",
+            "expanded": false,
+            "pages": [
+              "POST /v1/whatsapp/groups",
+              "POST /v1/whatsapp/groups/{group_jid}/participants"
+            ]
+          },
+          {
+            "group": "Commands",
+            "openapi": "openapi/whatsapp-use.yaml",
+            "expanded": false,
+            "pages": [
+              "POST /v1/whatsapp/commands",
+              "GET /v1/whatsapp/commands/{command_id}"
+            ]
+          },
+          {
+            "group": "Webhooks",
+            "openapi": "openapi/whatsapp-use.yaml",
+            "expanded": false,
+            "pages": [
+              "GET /v1/webhooks/endpoints",
+              "POST /v1/webhooks/endpoints",
+              "PATCH /v1/webhooks/endpoints/{endpoint_id}",
+              "DELETE /v1/webhooks/endpoints/{endpoint_id}",
+              "POST /v1/webhooks/endpoints/{endpoint_id}/test",
+              "GET /v1/webhooks/deliveries"
+            ]
           }
         ]
       },
@@ -133,7 +199,6 @@
       "perplexity",
       "mcp",
       "add-mcp",
-      "cursor",
       "vscode"
     ]
   },

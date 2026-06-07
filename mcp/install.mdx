@@ -9,45 +9,73 @@ Use the production remote MCP URL:
 https://api.whatsapp-use.com/mcp/whatsapp
 ```
 
-## Install flow
+## Generic setup
 
-<Steps>
-  <Step title="Pair WhatsApp">
-    Pair a WhatsApp connection from the dashboard or REST API before connecting MCP.
-  </Step>
-  <Step title="Add the remote MCP server">
-    Add the URL to your MCP client as a Streamable HTTP server.
-  </Step>
-  <Step title="Complete OAuth">
-    Your MCP client opens a browser to authorize access. Sign in with your WhatsApp Use account and choose the organization connection.
-  </Step>
-  <Step title="Use tools">
-    After authorization, the MCP client can list and call WhatsApp tools through the connection-bound grant.
-  </Step>
-</Steps>
+Use these values in any MCP client that supports remote HTTP MCP servers:
 
-## Claude Code example
+| Setting | Value |
+| --- | --- |
+| Name | `whatsapp-use` |
+| Transport | HTTP or Streamable HTTP |
+| URL | `https://api.whatsapp-use.com/mcp/whatsapp` |
+| Authentication | OAuth |
 
-```bash
-claude mcp add --transport http whatsapp-use https://api.whatsapp-use.com/mcp/whatsapp
-```
-
-On first use, Claude Code opens a browser to complete OAuth.
-
-## Cursor example
-
-Add a remote MCP server in Cursor settings:
+If your client uses JSON configuration, the server entry usually looks like this:
 
 ```json
 {
   "mcpServers": {
     "whatsapp-use": {
+      "type": "http",
       "url": "https://api.whatsapp-use.com/mcp/whatsapp"
     }
   }
 }
 ```
 
+<Note>
+  MCP clients use different config file locations and command names. The URL, transport, and OAuth behavior are the stable parts.
+</Note>
+
+## Optional client commands
+
+These examples are shortcuts for clients with a built-in MCP CLI. The generic URL and JSON config above are still the source of truth.
+
+<Tabs>
+  <Tab title="Claude Code">
+    ```bash
+    claude mcp add --transport http --scope user whatsapp-use https://api.whatsapp-use.com/mcp/whatsapp
+    ```
+  </Tab>
+  <Tab title="Codex">
+    ```bash
+    codex mcp add whatsapp-use --url https://api.whatsapp-use.com/mcp/whatsapp
+    codex mcp login whatsapp-use
+    ```
+  </Tab>
+</Tabs>
+
+Your client opens a browser to complete OAuth when it needs authorization.
+
+## Install flow
+
+<Steps>
+  <Step title="Add the remote MCP server">
+    Add the WhatsApp Use URL to your MCP client with HTTP transport.
+  </Step>
+  <Step title="Complete OAuth">
+    Your MCP client opens a browser. Sign in to WhatsApp Use, choose your organization, and authorize the MCP client.
+  </Step>
+  <Step title="Pair WhatsApp if needed">
+    If your organization has no paired connection, the browser flow sends you to pair WhatsApp with a QR code.
+  </Step>
+  <Step title="Use tools">
+    After authorization, your MCP client can call WhatsApp tools for the selected connection.
+  </Step>
+</Steps>
+
 ## QR pairing
 
-The MCP install flow does not pair WhatsApp by itself. If the connection is not paired, use the platform dashboard or REST pairing endpoints to scan the QR code.
+The install command only adds the MCP server to your client. Pairing happens in the browser because it requires account access, organization selection, and a WhatsApp QR scan.
+
+If you already have a paired connection, OAuth can authorize the MCP client immediately. If you do not, WhatsApp Use shows the QR pairing flow before the client can use tools.

@@ -1,0 +1,37 @@
+---
+title: "AI-readable docs"
+description: "Use WhatsApp Use docs with AI assistants and coding agents."
+---
+
+WhatsApp Use docs are available in formats that AI assistants can read directly.
+
+## LLM files
+
+Use these URLs when an AI tool asks for documentation context:
+
+```text
+https://docs.whatsapp-use.com/llms.txt
+https://docs.whatsapp-use.com/llms-full.txt
+```
+
+`llms.txt` is a concise index. `llms-full.txt` includes the full documentation content.
+
+## Skill file
+
+Use the production docs skill when an AI tool supports skill installation:
+
+```text
+https://docs.whatsapp-use.com/skill.md
+```
+
+The skill tells assistants to use production URLs, keep REST and MCP authentication separate, and avoid unreleased product surfaces.
+
+## Product MCP vs docs context
+
+The WhatsApp MCP server is the product interface for using WhatsApp tools:
+
+```text
+https://api.whatsapp-use.com/mcp/whatsapp
+```
+
+The docs URLs above are for reading documentation. They do not grant WhatsApp access.

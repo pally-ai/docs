@@ -1,0 +1,25 @@
+---
+title: "Media downloads"
+description: "Fetch WhatsApp media for a message on demand."
+---
+
+Message sync includes media metadata, not media bytes.
+
+Use `GET /v1/whatsapp/media/{message_id}` to fetch bytes for one message:
+
+```bash
+curl -L \
+  -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
+  "$WHATSAPP_USE_BASE_URL/v1/whatsapp/media/msg_123" \
+  --output media.bin
+```
+
+The response body is the media file. `Content-Type` is set from the WhatsApp media MIME type when available.
+
+## When media is unavailable
+
+`404` means the message has no downloadable media or WhatsApp Use can no longer fetch it from WhatsApp.
+
+## MCP
+
+MCP clients can call `whatsapp_download_media`. The tool returns MIME metadata and base64 content.

@@ -1,0 +1,32 @@
+---
+title: "Pagination and cursors"
+description: "Use limits, sync cursors, and message anchors."
+---
+
+WhatsApp Use uses small, endpoint-specific pagination controls.
+
+## Sync cursor
+
+`GET /v1/whatsapp/sync` returns changed conversations, contacts, and messages.
+
+```bash
+curl -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
+  "$WHATSAPP_USE_BASE_URL/v1/whatsapp/sync?cursor=0&limit=50"
+```
+
+Store the returned `cursor`. Send it on the next sync request.
+
+## Message pages
+
+Conversation messages use an optional anchor:
+
+```bash
+curl -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
+  "$WHATSAPP_USE_BASE_URL/v1/whatsapp/conversations/conv_123/messages?before_message_id=msg_123&limit=50"
+```
+
+Use `before_message_id` to page backward through a conversation.
+
+## Delivery and usage lists
+
+Webhook deliveries and usage endpoints accept `limit`. If omitted, the API chooses a default page size.

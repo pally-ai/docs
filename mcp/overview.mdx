@@ -3,31 +3,27 @@ title: "MCP overview"
 description: "Use WhatsApp Use as a remote MCP server for AI clients."
 ---
 
-WhatsApp Use exposes a remote MCP server for WhatsApp tools:
+WhatsApp Use exposes one public remote MCP server:
 
 ```text
 https://api.whatsapp-use.com/mcp/whatsapp
 ```
 
-The MCP server uses Streamable HTTP and OAuth. It does not accept REST API keys.
+It uses HTTP transport and OAuth. It does not accept REST API keys.
 
-## What the MCP server can do
+## Tools
 
-The WhatsApp MCP server can:
-
-- Read connection and pairing status.
-- Start pairing and read QR state.
-- Sync conversations, contacts, and messages.
-- List messages in a conversation.
-- Download media for a message on demand.
-- Send, react to, edit, delete, and mark messages as read.
-- Create groups and update group participants.
-- Unlink the paired WhatsApp device.
-- Read queued command status.
+- Connection and pairing status.
+- Conversation, contact, and message sync.
+- Message send, react, edit, delete, and read receipts.
+- Media download on demand.
+- Group creation and participant updates.
+- Device unlink.
+- Command enqueue and status.
 
 ## Relationship to REST
 
-MCP tools use the same WhatsApp connection model as the REST API. The difference is authentication and client shape:
+MCP uses the same connection model as the REST API:
 
 | Interface | Authentication | Best for |
 | --- | --- | --- |
@@ -35,5 +31,5 @@ MCP tools use the same WhatsApp connection model as the REST API. The difference
 | Remote MCP | OAuth | AI tools and MCP clients that need WhatsApp tools. |
 
 <Info>
-  MCP OAuth grants an AI client access to an existing organization connection. Pair WhatsApp first from the dashboard or API.
+  MCP OAuth grants a client access to one organization connection. If no connection is paired, the browser flow sends the user to pair WhatsApp.
 </Info>

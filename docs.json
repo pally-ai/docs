@@ -72,7 +72,10 @@
             "pages": [
               "api/authentication",
               "api/connections",
-              "api/scopes"
+              "api/scopes",
+              "api/errors",
+              "api/pagination",
+              "api/media"
             ]
           },
           {

@@ -66,8 +66,8 @@ Your client opens a browser when OAuth authorization is required.
   <Step title="Complete OAuth">
     Your MCP client opens a browser. Sign in, choose your organization, and authorize the client.
   </Step>
-  <Step title="Pair WhatsApp if needed">
-    If your organization has no paired connection, the browser flow sends you to pair WhatsApp with a QR code.
+  <Step title="Pair WhatsApp first if needed">
+    If your organization has no connection, create an API key and pair WhatsApp from the platform dashboard before authorizing MCP.
   </Step>
   <Step title="Use tools">
     After authorization, your MCP client can call WhatsApp tools for the selected connection.
@@ -76,6 +76,6 @@ Your client opens a browser when OAuth authorization is required.
 
 ## QR pairing
 
-The install command only adds the MCP server to your client. Pairing happens in the browser because it requires account access, organization selection, and a WhatsApp QR scan.
+The install command only adds the MCP server to your client. Pairing happens in the platform dashboard because it requires account access, organization selection, and a WhatsApp QR scan.
 
-If you already have a paired connection, OAuth can authorize the MCP client immediately. If you do not, WhatsApp Use shows the QR pairing flow before the client can use tools.
+If you already have a paired connection, OAuth can authorize the MCP client immediately. If you do not, create an API key, pair WhatsApp in the dashboard, then retry MCP authorization.

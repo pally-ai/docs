@@ -27,12 +27,12 @@ The WhatsApp MCP server can:
 
 ## Relationship to REST
 
-MCP tools call the same connection runtime as the REST API. The difference is authentication and client shape:
+MCP tools use the same WhatsApp connection model as the REST API. The difference is authentication and client shape:
 
 | Interface | Authentication | Best for |
 | --- | --- | --- |
 | REST API | Dashboard-created API key | Your app, backend jobs, integrations, webhook management. |
-| Remote MCP | OAuth | AI tools and agent clients that need WhatsApp tools. |
+| Remote MCP | OAuth | AI tools and MCP clients that need WhatsApp tools. |
 
 <Info>
   MCP OAuth grants an AI client access to an existing organization connection. Pair WhatsApp first from the dashboard or API.

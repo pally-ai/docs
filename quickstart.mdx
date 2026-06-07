@@ -27,7 +27,7 @@ curl -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
   "$WHATSAPP_USE_BASE_URL/v1/me"
 ```
 
-The response includes your organization, key metadata, runtime, and public endpoint paths.
+The response includes your organization, key metadata, and public endpoint paths.
 
 ## 3. Start WhatsApp pairing
 
@@ -53,7 +53,7 @@ curl -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
   "$WHATSAPP_USE_BASE_URL/v1/whatsapp/status"
 ```
 
-When pairing succeeds, `paired` is `true`. `connected` is `true` when the runtime currently has an active WhatsApp socket.
+When pairing succeeds, `paired` is `true`. `connected` is `true` when WhatsApp Use currently has an active WhatsApp connection.
 
 ## 5. Send a message
 

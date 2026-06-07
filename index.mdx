@@ -12,7 +12,7 @@ The platform has two public interfaces:
     Use API keys to pair WhatsApp, send messages, read conversations, fetch media on demand, and manage webhooks.
   </Card>
   <Card title="Remote MCP" icon="bot" href="/mcp/overview">
-    Let AI clients use WhatsApp tools through OAuth and a runtime-bound MCP grant.
+    Let AI clients use WhatsApp tools through OAuth and a connection-bound MCP grant.
   </Card>
 </CardGroup>
 
@@ -34,9 +34,5 @@ The platform has two public interfaces:
 </Steps>
 
 <Info>
-  WhatsApp device pairing is separate from MCP OAuth. OAuth authorizes an AI client to use your existing connection. Pairing authorizes the backend runtime to connect to WhatsApp.
+  WhatsApp device pairing is separate from MCP OAuth. OAuth authorizes an AI client to use your existing connection. Pairing authorizes WhatsApp Use to connect to WhatsApp.
 </Info>
-
-## Products
-
-WhatsApp Use currently exposes the WhatsApp API and WhatsApp MCP server. The agent-in-a-box runtime and HelixDB memory system are not part of the public product surface yet.

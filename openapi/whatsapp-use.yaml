@@ -18,11 +18,11 @@ paths:
   /v1/me:
     get:
       tags: [Account]
-      summary: Inspect API key and runtime
+      summary: Inspect API key
       operationId: getMe
       responses:
         "200":
-          description: API key metadata, runtime, runtime health, and endpoint paths.
+          description: API key metadata and endpoint paths.
           content:
             application/json:
               schema:

@@ -1,55 +1,46 @@
-# Mintlify Starter Kit
+# WhatsApp Use docs
 
-Use the starter kit to get your docs deployed and ready to customize.
+Public developer documentation for WhatsApp Use.
 
-Click the green **Use this template** button at the top of this repo to copy the Mintlify starter kit. The starter kit contains examples with
+The live docs are hosted at `https://docs.whatsapp-use.com`.
 
-- Guide pages
-- Navigation
-- Customizations
-- API reference pages
-- Use of popular components
+## Branches
 
-**[Follow the full quickstart guide](https://starter.mintlify.com/quickstart)**
+- `master` is the production deployment branch.
+- `dev` is used for docs changes before promotion.
 
-## AI-assisted writing
+Public docs should describe the production product only. Do not document non-production URLs, internal services, local-only flows, or unreleased product surfaces.
 
-Set up your AI coding tool to work with Mintlify:
+## Local development
+
+Run the Mintlify CLI from this directory:
 
 ```bash
-npx skills add https://mintlify.com/docs
+npx mint dev
 ```
 
-This command installs Mintlify's documentation skill for your configured AI tools like Claude Code, Cursor, Windsurf, and others. The skill includes component reference, writing standards, and workflow guidance.
+Validate before pushing:
 
-See the [AI tools guides](/ai-tools) for tool-specific setup.
-
-## Development
-
-Install the [Mintlify CLI](https://www.npmjs.com/package/mint) to preview your documentation changes locally. To install, use the following command:
-
-```
-npm i -g mint
+```bash
+npx mint validate
+npx mint broken-links
 ```
 
-Run the following command at the root of your documentation, where your `docs.json` is located:
+The CLI currently expects an LTS Node version. Use Node 22 if your default Node version is newer.
 
-```
-mint dev
-```
+## Structure
 
-View your local preview at `http://localhost:3000`.
+- `docs.json` controls navigation, branding, API reference generation, and global settings.
+- `openapi/whatsapp-use.yaml` is the public REST API reference source.
+- `guides/` contains product guides for REST API usage.
+- `mcp/` contains remote MCP installation, OAuth, and tool docs.
+- `.mintlify/Assistant.md` defines the docs assistant behavior.
 
-## Publishing changes
+## Writing rules
 
-Install our GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app) to propagate changes from your repo to your deployment. Changes are deployed to production automatically after pushing to the default branch.
-
-## Need help?
-
-### Troubleshooting
-
-- If your dev environment isn't running: Run `mint update` to ensure you have the most recent version of the CLI.
-- If a page loads as a 404: Make sure you are running in a folder with a valid `docs.json`.
-
-### Resources
-- [Mintlify documentation](https://mintlify.com/docs)
+- Use production URLs only: `https://api.whatsapp-use.com` and `https://api.whatsapp-use.com/mcp/whatsapp`.
+- Treat organizations as the account boundary.
+- Use "connection" for a paired WhatsApp account.
+- REST API examples use dashboard-created API keys.
+- MCP examples use OAuth and should not use API keys.
+- Do not document unreleased product surfaces.

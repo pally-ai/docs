@@ -1,18 +1,33 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
+  "theme": "willow",
   "name": "WhatsApp Use",
   "description": "Developer documentation for the WhatsApp Use API and remote MCP server.",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#22C55E",
-    "dark": "#15803D"
+    "primary": "#0B944B",
+    "light": "#08733C",
+    "dark": "#0E1611"
   },
   "favicon": "/favicon.svg",
   "logo": {
     "light": "/logo/light.svg",
     "dark": "/logo/dark.svg",
     "href": "https://whatsapp-use.com"
+  },
+  "appearance": {
+    "default": "system"
+  },
+  "fonts": {
+    "family": "Inter"
+  },
+  "icons": {
+    "library": "lucide"
+  },
+  "background": {
+    "color": {
+      "light": "#EEF7F1",
+      "dark": "#0D1510"
+    }
   },
   "api": {
     "openapi": "openapi/whatsapp-use.yaml",

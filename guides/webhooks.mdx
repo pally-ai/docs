@@ -1,6 +1,6 @@
 ---
 title: "Webhooks"
-description: "Receive WhatsApp runtime events at your own endpoint."
+description: "Receive WhatsApp events at your own endpoint."
 ---
 
 Webhook endpoints let your application receive events from WhatsApp Use.
@@ -32,7 +32,7 @@ Webhook requests use JSON:
 {
   "id": "evt_20260606173000.000000000",
   "type": "whatsapp.connection.status_changed",
-  "source": "runtime",
+  "source": "whatsapp",
   "user_id": "org_...",
   "api_key_id": "key_...",
   "payload": {

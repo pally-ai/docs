@@ -3,7 +3,7 @@ title: "Connections"
 description: "Understand how REST requests select a WhatsApp connection."
 ---
 
-A connection is one WhatsApp account. Pairing, messages, media, and groups all happen through a selected connection runtime.
+A connection is one WhatsApp account. Pairing, messages, media, and groups all happen through the selected connection.
 
 ## One connection per request
 
@@ -23,6 +23,6 @@ curl \
 
 Create multiple connections when your organization manages multiple WhatsApp accounts. Keep API keys broad enough for your service boundary, and pass the connection ID at request time when a key can reach more than one account.
 
-## Runtime lifecycle
+## Connection lifecycle
 
-The platform backend reconciles the runtime for a connection before proxying traffic. In production, runtimes are private ECS services. They are not directly exposed to API users.
+Pair a connection before using it for messages, media, or groups. If the connection is not paired or connected, WhatsApp endpoints return an error that your application can surface to the user.

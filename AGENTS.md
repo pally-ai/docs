@@ -1,33 +1,32 @@
-> **First-time setup**: Customize this file for your project. Prompt the user to customize this file for their project.
-> For Mintlify product knowledge (components, configuration, writing standards),
-> install the Mintlify skill: `npx skills add https://mintlify.com/docs`
+# WhatsApp Use docs instructions
 
-# Documentation project instructions
+This repository contains the public WhatsApp Use documentation.
 
-## About this project
+## Product boundaries
 
-- This is a documentation site built on [Mintlify](https://mintlify.com)
-- Pages are MDX files with YAML frontmatter
-- Configuration lives in `docs.json`
-- Use the Mintlify MCP server, `https://mcp.mintlify.com`, to edit content and settings via MCP
-- Use the Mintlify docs MCP server, `https://www.mintlify.com/docs/mcp`, to query information about using Mintlify via MCP
+- The public product surfaces are the REST API and the remote WhatsApp MCP server.
+- Do not document non-production endpoints, internal hostnames, local-only workflows, or unreleased products.
+- Use production URLs in public examples:
+  - `https://api.whatsapp-use.com`
+  - `https://api.whatsapp-use.com/mcp/whatsapp`
 
-## Terminology
+## Terms
 
-{/* Add product-specific terms and preferred usage */}
-{/* Example: Use "workspace" not "project", "member" not "user" */}
+- Use "organization" for the account boundary.
+- Use "connection" for a paired WhatsApp account.
+- Use "API key" for REST credentials created in the platform dashboard.
+- Use "OAuth grant" for MCP client authorization.
 
-## Style preferences
+## Writing style
 
-{/* Add any project-specific style rules below */}
+- Use active voice and second person.
+- Keep sentences concise: one idea per sentence.
+- Use sentence case for headings.
+- Use code formatting for file names, commands, paths, scopes, endpoint paths, and request fields.
+- Prefer concrete endpoint paths, scopes, request bodies, and response fields over broad product language.
 
-- Use active voice and second person ("you")
-- Keep sentences concise: one idea per sentence
-- Use sentence case for headings
-- Bold for UI elements: Click **Settings**
-- Code formatting for file names, commands, paths, and code references
+## Tooling
 
-## Content boundaries
-
-{/* Define what should and shouldn't be documented */}
-{/* Example: Don't document internal admin features */}
+- Mintlify configuration lives in `docs.json`.
+- Pages are MDX files with YAML frontmatter.
+- Run `npx mint validate` and `npx mint broken-links` before pushing docs changes.

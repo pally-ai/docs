@@ -6,8 +6,6 @@ info:
 servers:
   - url: https://api.whatsapp-use.com
     description: Production
-  - url: https://api.staging.whatsapp-use.com
-    description: Staging
 security:
   - bearerAuth: []
 tags:

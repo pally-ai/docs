@@ -5,6 +5,8 @@ description: "Choose the least-privilege scopes for API keys and MCP grants."
 
 Scopes control access to REST APIs and MCP grants.
 
+MCP grants created from the dashboard are read-only by default. The dashboard write switch adds or removes `whatsapp:write` for that MCP grant.
+
 | Scope | REST APIs | MCP resources |
 | --- | --- | --- |
 | `whatsapp:read` | `GET /v1/whatsapp/*`, `/v1/me`, `/v1/usage` | Required for `/mcp/whatsapp`. |

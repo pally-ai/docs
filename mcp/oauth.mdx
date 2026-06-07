@@ -54,6 +54,8 @@ Each grant binds:
 
 The WhatsApp MCP resource requires `whatsapp:read` for read tools. Write tools require the grant to include `whatsapp:write`.
 
+Dashboard-created MCP testing grants default to read-only. Enable write tools in the dashboard only for clients that should be allowed to pair, send messages, create groups, update group participants, mark messages read, or unlink the connected WhatsApp device.
+
 <Warning>
   Do not paste dashboard API keys into MCP clients. MCP uses OAuth tokens, and the backend rejects API-key authentication for MCP.
 </Warning>

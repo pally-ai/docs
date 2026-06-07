@@ -25,16 +25,113 @@ Pairing connects one WhatsApp account to one WhatsApp Use connection.
   </Step>
 </Steps>
 
-```bash
+<CodeGroup dropdown>
+
+```bash cURL
 curl -X POST \
   -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
   "$WHATSAPP_USE_BASE_URL/v1/whatsapp/pair"
 ```
 
-```bash
+```python Python
+import os
+import requests
+
+res = requests.post(
+    f"{os.environ['WHATSAPP_USE_BASE_URL']}/v1/whatsapp/pair",
+    headers={"Authorization": f"Bearer {os.environ['WHATSAPP_USE_API_KEY']}"},
+)
+res.raise_for_status()
+print(res.json())
+```
+
+```javascript JavaScript
+const res = await fetch(`${process.env.WHATSAPP_USE_BASE_URL}/v1/whatsapp/pair`, {
+  method: "POST",
+  headers: { Authorization: `Bearer ${process.env.WHATSAPP_USE_API_KEY}` },
+});
+
+console.log(await res.json());
+```
+
+```go Go
+package main
+
+import (
+	"fmt"
+	"io"
+	"net/http"
+	"os"
+)
+
+func main() {
+	req, _ := http.NewRequest("POST", os.Getenv("WHATSAPP_USE_BASE_URL")+"/v1/whatsapp/pair", nil)
+	req.Header.Set("Authorization", "Bearer "+os.Getenv("WHATSAPP_USE_API_KEY"))
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+	out, _ := io.ReadAll(resp.Body)
+	fmt.Println(string(out))
+}
+```
+
+</CodeGroup>
+
+<CodeGroup dropdown>
+
+```bash cURL
 curl -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
   "$WHATSAPP_USE_BASE_URL/v1/whatsapp/pair/status"
 ```
+
+```python Python
+import os
+import requests
+
+res = requests.get(
+    f"{os.environ['WHATSAPP_USE_BASE_URL']}/v1/whatsapp/pair/status",
+    headers={"Authorization": f"Bearer {os.environ['WHATSAPP_USE_API_KEY']}"},
+)
+res.raise_for_status()
+print(res.json())
+```
+
+```javascript JavaScript
+const res = await fetch(`${process.env.WHATSAPP_USE_BASE_URL}/v1/whatsapp/pair/status`, {
+  headers: { Authorization: `Bearer ${process.env.WHATSAPP_USE_API_KEY}` },
+});
+
+console.log(await res.json());
+```
+
+```go Go
+package main
+
+import (
+	"fmt"
+	"io"
+	"net/http"
+	"os"
+)
+
+func main() {
+	req, _ := http.NewRequest("GET", os.Getenv("WHATSAPP_USE_BASE_URL")+"/v1/whatsapp/pair/status", nil)
+	req.Header.Set("Authorization", "Bearer "+os.Getenv("WHATSAPP_USE_API_KEY"))
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+	out, _ := io.ReadAll(resp.Body)
+	fmt.Println(string(out))
+}
+```
+
+</CodeGroup>
 
 ## Pairing state
 

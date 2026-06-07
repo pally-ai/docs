@@ -85,7 +85,9 @@ func main() {
 
 Reply in an existing conversation:
 
-```bash
+<CodeGroup dropdown>
+
+```bash cURL
 curl -X POST \
   -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
   -H "Content-Type: application/json" \
@@ -96,9 +98,69 @@ curl -X POST \
   }'
 ```
 
+```python Python
+import os
+import requests
+
+res = requests.post(
+    f"{os.environ['WHATSAPP_USE_BASE_URL']}/v1/whatsapp/messages/send",
+    headers={"Authorization": f"Bearer {os.environ['WHATSAPP_USE_API_KEY']}"},
+    json={"conversation_id": "conv_14155550123swhatsappnet", "text": "Following up here"},
+)
+res.raise_for_status()
+print(res.json())
+```
+
+```javascript JavaScript
+const res = await fetch(`${process.env.WHATSAPP_USE_BASE_URL}/v1/whatsapp/messages/send`, {
+  method: "POST",
+  headers: {
+    Authorization: `Bearer ${process.env.WHATSAPP_USE_API_KEY}`,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    conversation_id: "conv_14155550123swhatsappnet",
+    text: "Following up here",
+  }),
+});
+
+console.log(await res.json());
+```
+
+```go Go
+package main
+
+import (
+	"bytes"
+	"fmt"
+	"io"
+	"net/http"
+	"os"
+)
+
+func main() {
+	body := []byte(`{"conversation_id":"conv_14155550123swhatsappnet","text":"Following up here"}`)
+	req, _ := http.NewRequest("POST", os.Getenv("WHATSAPP_USE_BASE_URL")+"/v1/whatsapp/messages/send", bytes.NewReader(body))
+	req.Header.Set("Authorization", "Bearer "+os.Getenv("WHATSAPP_USE_API_KEY"))
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+	out, _ := io.ReadAll(resp.Body)
+	fmt.Println(string(out))
+}
+```
+
+</CodeGroup>
+
 ## React to a message
 
-```bash
+<CodeGroup dropdown>
+
+```bash cURL
 curl -X POST \
   -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
   -H "Content-Type: application/json" \
@@ -110,11 +172,76 @@ curl -X POST \
   }'
 ```
 
+```python Python
+import os
+import requests
+
+res = requests.post(
+    f"{os.environ['WHATSAPP_USE_BASE_URL']}/v1/whatsapp/messages/react",
+    headers={"Authorization": f"Bearer {os.environ['WHATSAPP_USE_API_KEY']}"},
+    json={
+        "conversation_id": "conv_14155550123swhatsappnet",
+        "message_id": "3EB0...",
+        "emoji": "\U0001f44d",
+    },
+)
+res.raise_for_status()
+print(res.json())
+```
+
+```javascript JavaScript
+const res = await fetch(`${process.env.WHATSAPP_USE_BASE_URL}/v1/whatsapp/messages/react`, {
+  method: "POST",
+  headers: {
+    Authorization: `Bearer ${process.env.WHATSAPP_USE_API_KEY}`,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    conversation_id: "conv_14155550123swhatsappnet",
+    message_id: "3EB0...",
+    emoji: "\uD83D\uDC4D",
+  }),
+});
+
+console.log(await res.json());
+```
+
+```go Go
+package main
+
+import (
+	"bytes"
+	"fmt"
+	"io"
+	"net/http"
+	"os"
+)
+
+func main() {
+	body := []byte(`{"conversation_id":"conv_14155550123swhatsappnet","message_id":"3EB0...","emoji":"\uD83D\uDC4D"}`)
+	req, _ := http.NewRequest("POST", os.Getenv("WHATSAPP_USE_BASE_URL")+"/v1/whatsapp/messages/react", bytes.NewReader(body))
+	req.Header.Set("Authorization", "Bearer "+os.Getenv("WHATSAPP_USE_API_KEY"))
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+	out, _ := io.ReadAll(resp.Body)
+	fmt.Println(string(out))
+}
+```
+
+</CodeGroup>
+
 Use an empty `emoji` to clear the reaction.
 
 ## Edit or delete a message
 
-```bash
+<CodeGroup dropdown>
+
+```bash cURL
 curl -X POST \
   -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
   -H "Content-Type: application/json" \
@@ -126,7 +253,72 @@ curl -X POST \
   }'
 ```
 
-```bash
+```python Python
+import os
+import requests
+
+res = requests.post(
+    f"{os.environ['WHATSAPP_USE_BASE_URL']}/v1/whatsapp/messages/edit",
+    headers={"Authorization": f"Bearer {os.environ['WHATSAPP_USE_API_KEY']}"},
+    json={
+        "conversation_id": "conv_14155550123swhatsappnet",
+        "message_id": "3EB0...",
+        "text": "Updated text",
+    },
+)
+res.raise_for_status()
+print(res.json())
+```
+
+```javascript JavaScript
+const res = await fetch(`${process.env.WHATSAPP_USE_BASE_URL}/v1/whatsapp/messages/edit`, {
+  method: "POST",
+  headers: {
+    Authorization: `Bearer ${process.env.WHATSAPP_USE_API_KEY}`,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    conversation_id: "conv_14155550123swhatsappnet",
+    message_id: "3EB0...",
+    text: "Updated text",
+  }),
+});
+
+console.log(await res.json());
+```
+
+```go Go
+package main
+
+import (
+	"bytes"
+	"fmt"
+	"io"
+	"net/http"
+	"os"
+)
+
+func main() {
+	body := []byte(`{"conversation_id":"conv_14155550123swhatsappnet","message_id":"3EB0...","text":"Updated text"}`)
+	req, _ := http.NewRequest("POST", os.Getenv("WHATSAPP_USE_BASE_URL")+"/v1/whatsapp/messages/edit", bytes.NewReader(body))
+	req.Header.Set("Authorization", "Bearer "+os.Getenv("WHATSAPP_USE_API_KEY"))
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+	out, _ := io.ReadAll(resp.Body)
+	fmt.Println(string(out))
+}
+```
+
+</CodeGroup>
+
+<CodeGroup dropdown>
+
+```bash cURL
 curl -X POST \
   -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
   -H "Content-Type: application/json" \
@@ -137,9 +329,69 @@ curl -X POST \
   }'
 ```
 
+```python Python
+import os
+import requests
+
+res = requests.post(
+    f"{os.environ['WHATSAPP_USE_BASE_URL']}/v1/whatsapp/messages/delete",
+    headers={"Authorization": f"Bearer {os.environ['WHATSAPP_USE_API_KEY']}"},
+    json={"conversation_id": "conv_14155550123swhatsappnet", "message_id": "3EB0..."},
+)
+res.raise_for_status()
+print(res.json())
+```
+
+```javascript JavaScript
+const res = await fetch(`${process.env.WHATSAPP_USE_BASE_URL}/v1/whatsapp/messages/delete`, {
+  method: "POST",
+  headers: {
+    Authorization: `Bearer ${process.env.WHATSAPP_USE_API_KEY}`,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    conversation_id: "conv_14155550123swhatsappnet",
+    message_id: "3EB0...",
+  }),
+});
+
+console.log(await res.json());
+```
+
+```go Go
+package main
+
+import (
+	"bytes"
+	"fmt"
+	"io"
+	"net/http"
+	"os"
+)
+
+func main() {
+	body := []byte(`{"conversation_id":"conv_14155550123swhatsappnet","message_id":"3EB0..."}`)
+	req, _ := http.NewRequest("POST", os.Getenv("WHATSAPP_USE_BASE_URL")+"/v1/whatsapp/messages/delete", bytes.NewReader(body))
+	req.Header.Set("Authorization", "Bearer "+os.Getenv("WHATSAPP_USE_API_KEY"))
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+	out, _ := io.ReadAll(resp.Body)
+	fmt.Println(string(out))
+}
+```
+
+</CodeGroup>
+
 ## Mark messages as read
 
-```bash
+<CodeGroup dropdown>
+
+```bash cURL
 curl -X POST \
   -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
   -H "Content-Type: application/json" \
@@ -150,9 +402,69 @@ curl -X POST \
   }'
 ```
 
+```python Python
+import os
+import requests
+
+res = requests.post(
+    f"{os.environ['WHATSAPP_USE_BASE_URL']}/v1/whatsapp/messages/read",
+    headers={"Authorization": f"Bearer {os.environ['WHATSAPP_USE_API_KEY']}"},
+    json={"conversation_id": "conv_14155550123swhatsappnet", "message_ids": ["3EB0..."]},
+)
+res.raise_for_status()
+print(res.json())
+```
+
+```javascript JavaScript
+const res = await fetch(`${process.env.WHATSAPP_USE_BASE_URL}/v1/whatsapp/messages/read`, {
+  method: "POST",
+  headers: {
+    Authorization: `Bearer ${process.env.WHATSAPP_USE_API_KEY}`,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    conversation_id: "conv_14155550123swhatsappnet",
+    message_ids: ["3EB0..."],
+  }),
+});
+
+console.log(await res.json());
+```
+
+```go Go
+package main
+
+import (
+	"bytes"
+	"fmt"
+	"io"
+	"net/http"
+	"os"
+)
+
+func main() {
+	body := []byte(`{"conversation_id":"conv_14155550123swhatsappnet","message_ids":["3EB0..."]}`)
+	req, _ := http.NewRequest("POST", os.Getenv("WHATSAPP_USE_BASE_URL")+"/v1/whatsapp/messages/read", bytes.NewReader(body))
+	req.Header.Set("Authorization", "Bearer "+os.Getenv("WHATSAPP_USE_API_KEY"))
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+	out, _ := io.ReadAll(resp.Body)
+	fmt.Println(string(out))
+}
+```
+
+</CodeGroup>
+
 ## Create a group
 
-```bash
+<CodeGroup dropdown>
+
+```bash cURL
 curl -X POST \
   -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
   -H "Content-Type: application/json" \
@@ -162,3 +474,61 @@ curl -X POST \
     "participants": ["14155550123@s.whatsapp.net"]
   }'
 ```
+
+```python Python
+import os
+import requests
+
+res = requests.post(
+    f"{os.environ['WHATSAPP_USE_BASE_URL']}/v1/whatsapp/groups",
+    headers={"Authorization": f"Bearer {os.environ['WHATSAPP_USE_API_KEY']}"},
+    json={"name": "Launch updates", "participants": ["14155550123@s.whatsapp.net"]},
+)
+res.raise_for_status()
+print(res.json())
+```
+
+```javascript JavaScript
+const res = await fetch(`${process.env.WHATSAPP_USE_BASE_URL}/v1/whatsapp/groups`, {
+  method: "POST",
+  headers: {
+    Authorization: `Bearer ${process.env.WHATSAPP_USE_API_KEY}`,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    name: "Launch updates",
+    participants: ["14155550123@s.whatsapp.net"],
+  }),
+});
+
+console.log(await res.json());
+```
+
+```go Go
+package main
+
+import (
+	"bytes"
+	"fmt"
+	"io"
+	"net/http"
+	"os"
+)
+
+func main() {
+	body := []byte(`{"name":"Launch updates","participants":["14155550123@s.whatsapp.net"]}`)
+	req, _ := http.NewRequest("POST", os.Getenv("WHATSAPP_USE_BASE_URL")+"/v1/whatsapp/groups", bytes.NewReader(body))
+	req.Header.Set("Authorization", "Bearer "+os.Getenv("WHATSAPP_USE_API_KEY"))
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+	out, _ := io.ReadAll(resp.Body)
+	fmt.Println(string(out))
+}
+```
+
+</CodeGroup>

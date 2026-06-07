@@ -22,7 +22,7 @@ curl -X POST \
   }'
 ```
 
-The response includes a `secret`. Store it when you create the endpoint. Use it to verify webhook signatures.
+The response includes a `secret`. Store it when you create the endpoint. The secret is shown only on create and rotate responses.
 
 ## Delivery format
 
@@ -59,4 +59,14 @@ Each delivery includes:
 curl -X POST \
   -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
   "$WHATSAPP_USE_BASE_URL/v1/webhooks/endpoints/we_123/test"
+```
+
+## Rotate a secret
+
+Rotate the signing secret if it is lost or exposed. The response includes the new `secret` once.
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
+  "$WHATSAPP_USE_BASE_URL/v1/webhooks/endpoints/we_123/rotate-secret"
 ```

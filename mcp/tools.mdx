@@ -20,7 +20,7 @@ The WhatsApp MCP server exposes these tools.
 | --- | --- | --- |
 | `whatsapp_sync` | None | Read changed conversations, contacts, and messages after a sync cursor. Optional `cursor` and `limit`. |
 | `whatsapp_list_messages` | `conversation_id` | List messages in a WhatsApp conversation. Optional `before_message_id` and `limit`. |
-| `whatsapp_download_media` | `message_id` | Download media for a message as base64 plus MIME metadata. |
+| `whatsapp_download_media` | `message_id` | Download small media as base64 plus MIME metadata. Larger files should be streamed from `GET /v1/whatsapp/media/{message_id}`. |
 
 ## Messages
 
@@ -32,14 +32,12 @@ The WhatsApp MCP server exposes these tools.
 | `whatsapp_delete_message` | `message_id` plus `conversation_id` or `to` | Delete or revoke a sent message. |
 | `whatsapp_mark_read` | `message_ids` plus `conversation_id` or `to` | Mark messages as read. |
 
-## Groups and commands
+## Groups
 
 | Tool | Required arguments | Description |
 | --- | --- | --- |
 | `whatsapp_create_group` | `name`, `participants` | Create a WhatsApp group. Optional `announce` and `locked`. |
 | `whatsapp_update_group_participants` | `group_jid`, `participants`, `action` | Add, remove, promote, or demote group participants. |
-| `whatsapp_enqueue_command` | `kind` | Queue a raw WhatsApp command. |
-| `whatsapp_command_status` | `command_id` | Read queued command status and result. |
 
 ## Example tool request
 

@@ -11,7 +11,6 @@ security:
 tags:
   - name: Account
   - name: WhatsApp
-  - name: Commands
   - name: Webhooks
   - name: Usage
 paths:
@@ -364,50 +363,6 @@ paths:
       responses:
         "202":
           $ref: "#/components/responses/CommandAccepted"
-  /v1/whatsapp/commands:
-    post:
-      tags: [Commands]
-      summary: Enqueue a raw WhatsApp command
-      operationId: enqueueCommand
-      parameters:
-        - $ref: "#/components/parameters/ConnectionIdHeader"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required: [kind]
-              properties:
-                kind:
-                  type: string
-                payload:
-                  type: object
-                  additionalProperties: true
-      responses:
-        "202":
-          $ref: "#/components/responses/CommandAccepted"
-  /v1/whatsapp/commands/{command_id}:
-    get:
-      tags: [Commands]
-      summary: Get command status
-      operationId: getCommand
-      parameters:
-        - $ref: "#/components/parameters/ConnectionIdHeader"
-        - name: command_id
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: Command record.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CommandRecord"
-        "404":
-          $ref: "#/components/responses/NotFound"
   /v1/whatsapp/media/{message_id}:
     get:
       tags: [WhatsApp]
@@ -507,6 +462,27 @@ paths:
       responses:
         "200":
           description: Deleted endpoint.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  endpoint:
+                    $ref: "#/components/schemas/WebhookEndpoint"
+  /v1/webhooks/endpoints/{endpoint_id}/rotate-secret:
+    post:
+      tags: [Webhooks]
+      summary: Rotate a webhook endpoint secret
+      operationId: rotateWebhookEndpointSecret
+      parameters:
+        - name: endpoint_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Rotated endpoint. The new secret is only returned in this response.
           content:
             application/json:
               schema:

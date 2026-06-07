@@ -123,15 +123,6 @@
             ]
           },
           {
-            "group": "Commands",
-            "openapi": "openapi/whatsapp-use.yaml",
-            "expanded": false,
-            "pages": [
-              "POST /v1/whatsapp/commands",
-              "GET /v1/whatsapp/commands/{command_id}"
-            ]
-          },
-          {
             "group": "Webhooks",
             "openapi": "openapi/whatsapp-use.yaml",
             "expanded": false,
@@ -139,6 +130,7 @@
               "GET /v1/webhooks/endpoints",
               "POST /v1/webhooks/endpoints",
               "PATCH /v1/webhooks/endpoints/{endpoint_id}",
+              "POST /v1/webhooks/endpoints/{endpoint_id}/rotate-secret",
               "DELETE /v1/webhooks/endpoints/{endpoint_id}",
               "POST /v1/webhooks/endpoints/{endpoint_id}/test",
               "GET /v1/webhooks/deliveries"

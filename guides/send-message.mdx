@@ -9,7 +9,9 @@ Use `whatsapp:write` for message and group actions.
 
 Send to a known WhatsApp JID:
 
-```bash
+<CodeGroup dropdown>
+
+```bash cURL
 curl -X POST \
   -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
   -H "Content-Type: application/json" \
@@ -19,6 +21,67 @@ curl -X POST \
     "text": "Hello from WhatsApp Use"
   }'
 ```
+
+```javascript JavaScript
+const res = await fetch(`${process.env.WHATSAPP_USE_BASE_URL}/v1/whatsapp/messages/send`, {
+  method: "POST",
+  headers: {
+    Authorization: `Bearer ${process.env.WHATSAPP_USE_API_KEY}`,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    contact_id: "14155550123@s.whatsapp.net",
+    text: "Hello from WhatsApp Use",
+  }),
+});
+
+console.log(await res.json());
+```
+
+```python Python
+import os
+import requests
+
+res = requests.post(
+    f"{os.environ['WHATSAPP_USE_BASE_URL']}/v1/whatsapp/messages/send",
+    headers={"Authorization": f"Bearer {os.environ['WHATSAPP_USE_API_KEY']}"},
+    json={
+        "contact_id": "14155550123@s.whatsapp.net",
+        "text": "Hello from WhatsApp Use",
+    },
+)
+res.raise_for_status()
+print(res.json())
+```
+
+```go Go
+package main
+
+import (
+	"bytes"
+	"fmt"
+	"io"
+	"net/http"
+	"os"
+)
+
+func main() {
+	body := []byte(`{"contact_id":"14155550123@s.whatsapp.net","text":"Hello from WhatsApp Use"}`)
+	req, _ := http.NewRequest("POST", os.Getenv("WHATSAPP_USE_BASE_URL")+"/v1/whatsapp/messages/send", bytes.NewReader(body))
+	req.Header.Set("Authorization", "Bearer "+os.Getenv("WHATSAPP_USE_API_KEY"))
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+	out, _ := io.ReadAll(resp.Body)
+	fmt.Println(string(out))
+}
+```
+
+</CodeGroup>
 
 Reply in an existing conversation:
 

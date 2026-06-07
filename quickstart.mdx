@@ -5,6 +5,8 @@ description: "Create an API key, pair WhatsApp, and send your first message."
 
 This guide uses the REST API. Use the dashboard to create the API key, because the key secret is only shown once.
 
+Examples use plain HTTP clients. No SDK is required.
+
 ## Before you begin
 
 You need:
@@ -22,20 +24,117 @@ export WHATSAPP_USE_API_KEY="pa_test_..."
 
 ## 2. Inspect your key
 
-```bash
+<CodeGroup dropdown>
+
+```bash cURL
 curl -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
   "$WHATSAPP_USE_BASE_URL/v1/me"
 ```
+
+```javascript JavaScript
+const res = await fetch(`${process.env.WHATSAPP_USE_BASE_URL}/v1/me`, {
+  headers: { Authorization: `Bearer ${process.env.WHATSAPP_USE_API_KEY}` },
+});
+
+console.log(await res.json());
+```
+
+```python Python
+import os
+import requests
+
+res = requests.get(
+    f"{os.environ['WHATSAPP_USE_BASE_URL']}/v1/me",
+    headers={"Authorization": f"Bearer {os.environ['WHATSAPP_USE_API_KEY']}"},
+)
+res.raise_for_status()
+print(res.json())
+```
+
+```go Go
+package main
+
+import (
+	"fmt"
+	"io"
+	"net/http"
+	"os"
+)
+
+func main() {
+	req, _ := http.NewRequest("GET", os.Getenv("WHATSAPP_USE_BASE_URL")+"/v1/me", nil)
+	req.Header.Set("Authorization", "Bearer "+os.Getenv("WHATSAPP_USE_API_KEY"))
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	fmt.Println(string(body))
+}
+```
+
+</CodeGroup>
 
 The response includes your organization, key metadata, and public endpoint paths.
 
 ## 3. Start WhatsApp pairing
 
-```bash
+<CodeGroup dropdown>
+
+```bash cURL
 curl -X POST \
   -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
   "$WHATSAPP_USE_BASE_URL/v1/whatsapp/pair"
 ```
+
+```javascript JavaScript
+const res = await fetch(`${process.env.WHATSAPP_USE_BASE_URL}/v1/whatsapp/pair`, {
+  method: "POST",
+  headers: { Authorization: `Bearer ${process.env.WHATSAPP_USE_API_KEY}` },
+});
+
+console.log(await res.json());
+```
+
+```python Python
+import os
+import requests
+
+res = requests.post(
+    f"{os.environ['WHATSAPP_USE_BASE_URL']}/v1/whatsapp/pair",
+    headers={"Authorization": f"Bearer {os.environ['WHATSAPP_USE_API_KEY']}"},
+)
+res.raise_for_status()
+print(res.json())
+```
+
+```go Go
+package main
+
+import (
+	"fmt"
+	"io"
+	"net/http"
+	"os"
+)
+
+func main() {
+	req, _ := http.NewRequest("POST", os.Getenv("WHATSAPP_USE_BASE_URL")+"/v1/whatsapp/pair", nil)
+	req.Header.Set("Authorization", "Bearer "+os.Getenv("WHATSAPP_USE_API_KEY"))
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	fmt.Println(string(body))
+}
+```
+
+</CodeGroup>
 
 Then poll for the QR payload:
 
@@ -57,7 +156,9 @@ When pairing succeeds, `paired` is `true`. `connected` is `true` when WhatsApp U
 
 ## 5. Send a message
 
-```bash
+<CodeGroup dropdown>
+
+```bash cURL
 curl -X POST \
   -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
   -H "Content-Type: application/json" \
@@ -67,6 +168,67 @@ curl -X POST \
     "text": "Hello from WhatsApp Use"
   }'
 ```
+
+```javascript JavaScript
+const res = await fetch(`${process.env.WHATSAPP_USE_BASE_URL}/v1/whatsapp/messages/send`, {
+  method: "POST",
+  headers: {
+    Authorization: `Bearer ${process.env.WHATSAPP_USE_API_KEY}`,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    contact_id: "14155550123@s.whatsapp.net",
+    text: "Hello from WhatsApp Use",
+  }),
+});
+
+console.log(await res.json());
+```
+
+```python Python
+import os
+import requests
+
+res = requests.post(
+    f"{os.environ['WHATSAPP_USE_BASE_URL']}/v1/whatsapp/messages/send",
+    headers={"Authorization": f"Bearer {os.environ['WHATSAPP_USE_API_KEY']}"},
+    json={
+        "contact_id": "14155550123@s.whatsapp.net",
+        "text": "Hello from WhatsApp Use",
+    },
+)
+res.raise_for_status()
+print(res.json())
+```
+
+```go Go
+package main
+
+import (
+	"bytes"
+	"fmt"
+	"io"
+	"net/http"
+	"os"
+)
+
+func main() {
+	body := []byte(`{"contact_id":"14155550123@s.whatsapp.net","text":"Hello from WhatsApp Use"}`)
+	req, _ := http.NewRequest("POST", os.Getenv("WHATSAPP_USE_BASE_URL")+"/v1/whatsapp/messages/send", bytes.NewReader(body))
+	req.Header.Set("Authorization", "Bearer "+os.Getenv("WHATSAPP_USE_API_KEY"))
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+	out, _ := io.ReadAll(resp.Body)
+	fmt.Println(string(out))
+}
+```
+
+</CodeGroup>
 
 Use `conversation_id` instead of `contact_id` when replying to an existing conversation returned by `/v1/whatsapp/conversations` or `/v1/whatsapp/sync`.
 

@@ -1,0 +1,62 @@
+---
+title: "Webhooks"
+description: "Receive WhatsApp runtime events at your own endpoint."
+---
+
+Webhook endpoints let your application receive events from WhatsApp Use.
+
+## Create an endpoint
+
+Use an API key with `webhooks:manage`.
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
+  -H "Content-Type: application/json" \
+  "$WHATSAPP_USE_BASE_URL/v1/webhooks/endpoints" \
+  -d '{
+    "url": "https://example.com/webhooks/whatsapp-use",
+    "description": "Production webhook",
+    "event_types": ["*"],
+    "enabled": true
+  }'
+```
+
+The response includes a `secret`. Store it when you create the endpoint. Use it to verify webhook signatures.
+
+## Delivery format
+
+Webhook requests use JSON:
+
+```json
+{
+  "id": "evt_20260606173000.000000000",
+  "type": "whatsapp.connection.status_changed",
+  "source": "runtime",
+  "user_id": "org_...",
+  "api_key_id": "key_...",
+  "payload": {
+    "status": "paired"
+  },
+  "occurred_at": "2026-06-06T17:30:00Z"
+}
+```
+
+## Signature headers
+
+Each delivery includes:
+
+| Header | Description |
+| --- | --- |
+| `X-Whatsapp-Use-Event-Id` | Event ID. |
+| `X-Whatsapp-Use-Event-Type` | Event type. |
+| `X-Whatsapp-Use-Timestamp` | Unix timestamp used for signing. |
+| `X-Whatsapp-Use-Signature` | Signature in the form `t=<timestamp>,v1=<signature>`. |
+
+## Test an endpoint
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
+  "$WHATSAPP_USE_BASE_URL/v1/webhooks/endpoints/we_123/test"
+```

@@ -1,0 +1,101 @@
+---
+title: "Send messages"
+description: "Send text messages, react, edit, delete, mark read, and create groups."
+---
+
+Use `whatsapp:write` for message and group actions.
+
+## Send a text message
+
+Send to a known WhatsApp JID:
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
+  -H "Content-Type: application/json" \
+  "$WHATSAPP_USE_BASE_URL/v1/whatsapp/messages/send" \
+  -d '{
+    "contact_id": "14155550123@s.whatsapp.net",
+    "text": "Hello from WhatsApp Use"
+  }'
+```
+
+Reply in an existing conversation:
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
+  -H "Content-Type: application/json" \
+  "$WHATSAPP_USE_BASE_URL/v1/whatsapp/messages/send" \
+  -d '{
+    "conversation_id": "conv_14155550123swhatsappnet",
+    "text": "Following up here"
+  }'
+```
+
+## React to a message
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
+  -H "Content-Type: application/json" \
+  "$WHATSAPP_USE_BASE_URL/v1/whatsapp/messages/react" \
+  -d '{
+    "conversation_id": "conv_14155550123swhatsappnet",
+    "message_id": "3EB0...",
+    "emoji": "\uD83D\uDC4D"
+  }'
+```
+
+Use an empty `emoji` to clear the reaction.
+
+## Edit or delete a message
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
+  -H "Content-Type: application/json" \
+  "$WHATSAPP_USE_BASE_URL/v1/whatsapp/messages/edit" \
+  -d '{
+    "conversation_id": "conv_14155550123swhatsappnet",
+    "message_id": "3EB0...",
+    "text": "Updated text"
+  }'
+```
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
+  -H "Content-Type: application/json" \
+  "$WHATSAPP_USE_BASE_URL/v1/whatsapp/messages/delete" \
+  -d '{
+    "conversation_id": "conv_14155550123swhatsappnet",
+    "message_id": "3EB0..."
+  }'
+```
+
+## Mark messages as read
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
+  -H "Content-Type: application/json" \
+  "$WHATSAPP_USE_BASE_URL/v1/whatsapp/messages/read" \
+  -d '{
+    "conversation_id": "conv_14155550123swhatsappnet",
+    "message_ids": ["3EB0..."]
+  }'
+```
+
+## Create a group
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
+  -H "Content-Type: application/json" \
+  "$WHATSAPP_USE_BASE_URL/v1/whatsapp/groups" \
+  -d '{
+    "name": "Launch updates",
+    "participants": ["14155550123@s.whatsapp.net"]
+  }'
+```

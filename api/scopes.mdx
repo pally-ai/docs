@@ -1,0 +1,16 @@
+---
+title: "Scopes"
+description: "Choose the least-privilege scopes for API keys and MCP grants."
+---
+
+Scopes control access to REST APIs and MCP grants.
+
+| Scope | REST APIs | MCP resources |
+| --- | --- | --- |
+| `whatsapp:read` | `GET /v1/whatsapp/*`, `/v1/me`, `/v1/usage` | Required for `/mcp/whatsapp`. |
+| `whatsapp:write` | `POST /v1/whatsapp/pair`, sends, reactions, edits, deletes, read receipts, groups, unlink, and commands | Allows write tools when granted to the WhatsApp MCP resource. |
+| `webhooks:manage` | `/v1/webhooks/*` | Not used by the WhatsApp MCP server. |
+
+<Tip>
+  Create separate API keys for production services, local testing, and CI. Revoke or rotate keys independently without changing the connection runtime.
+</Tip>

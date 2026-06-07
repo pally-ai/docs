@@ -1,0 +1,60 @@
+---
+title: "MCP OAuth"
+description: "Understand how OAuth grants bind MCP clients to WhatsApp connections."
+---
+
+MCP clients authenticate through OAuth 2.1 with PKCE. WhatsApp Use publishes protected-resource metadata for each MCP resource.
+
+## Resources
+
+| Resource | Metadata |
+| --- | --- |
+| `/mcp/whatsapp` | `/.well-known/oauth-protected-resource/mcp/whatsapp` |
+
+The authorization server metadata is available at:
+
+```text
+/.well-known/oauth-authorization-server
+```
+
+## Authorization flow
+
+<Steps>
+  <Step title="Discover metadata">
+    The MCP client reads protected-resource metadata for `/mcp/whatsapp`.
+  </Step>
+  <Step title="Register or identify the client">
+    Clients can use dynamic client registration at `POST /oauth/register`.
+  </Step>
+  <Step title="Open authorization URL">
+    The client starts `GET /oauth/authorize` with PKCE and the target resource.
+  </Step>
+  <Step title="Sign in">
+    WhatsApp Use authenticates the user and selects an allowed organization connection.
+  </Step>
+  <Step title="Exchange code">
+    The client exchanges the authorization code at `POST /oauth/token`.
+  </Step>
+  <Step title="Use access token">
+    The client calls `/mcp/whatsapp` with the OAuth bearer token.
+  </Step>
+</Steps>
+
+## Grant binding
+
+Each grant binds:
+
+- User and organization.
+- MCP resource.
+- Scopes.
+- Client ID and client name.
+- API key and runtime API key.
+- Connection ID.
+
+## Scopes
+
+The WhatsApp MCP resource requires `whatsapp:read` for read tools. Write tools require the grant to include `whatsapp:write`.
+
+<Warning>
+  Do not paste dashboard API keys into MCP clients. MCP uses OAuth tokens, and the backend rejects API-key authentication for MCP.
+</Warning>

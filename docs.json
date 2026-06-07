@@ -1,53 +1,112 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Mintlify Starter Kit",
+  "name": "WhatsApp Use",
+  "description": "Developer documentation for the WhatsApp Use API and remote MCP server.",
   "colors": {
     "primary": "#16A34A",
-    "light": "#07C983",
+    "light": "#22C55E",
     "dark": "#15803D"
   },
   "favicon": "/favicon.svg",
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg",
+    "href": "https://whatsapp-use.com"
+  },
+  "api": {
+    "openapi": "openapi/whatsapp-use.yaml",
+    "playground": {
+      "display": "interactive"
+    },
+    "params": {
+      "expanded": "all"
+    },
+    "examples": {
+      "languages": ["curl", "javascript", "python", "go"],
+      "defaults": "required",
+      "prefill": true
+    }
+  },
   "navigation": {
-    "pages": [
+    "tabs": [
       {
-        "group": "Getting Started",
-        "pages": [
-          "index",
-          "quickstart"
+        "tab": "Guides",
+        "icon": "book-open",
+        "groups": [
+          {
+            "group": "Get started",
+            "pages": [
+              "index",
+              "quickstart",
+              "guides/concepts",
+              "guides/pair-whatsapp",
+              "guides/send-message",
+              "guides/webhooks"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "REST API",
+        "icon": "braces",
+        "groups": [
+          {
+            "group": "API basics",
+            "pages": [
+              "api/authentication",
+              "api/connections",
+              "api/scopes"
+            ]
+          },
+          {
+            "group": "Reference",
+            "openapi": "openapi/whatsapp-use.yaml"
+          }
+        ]
+      },
+      {
+        "tab": "MCP",
+        "icon": "bot",
+        "groups": [
+          {
+            "group": "Remote MCP",
+            "pages": [
+              "mcp/overview",
+              "mcp/install",
+              "mcp/oauth",
+              "mcp/tools"
+            ]
+          }
         ]
       }
     ],
     "global": {
       "anchors": [
         {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
+          "anchor": "Platform",
+          "href": "https://platform.whatsapp-use.com",
+          "icon": "layout-dashboard"
         },
         {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
+          "anchor": "Website",
+          "href": "https://whatsapp-use.com",
+          "icon": "globe"
         }
       ]
     }
   },
-  "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
-  },
   "navbar": {
     "links": [
       {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
+        "label": "Platform",
+        "href": "https://platform.whatsapp-use.com"
       }
     ],
     "primary": {
       "type": "button",
-      "label": "Dashboard",
-      "href": "https://app.mintlify.com"
+      "label": "Get API key",
+      "href": "https://platform.whatsapp-use.com/app/keys"
     }
   },
   "contextual": {
@@ -58,15 +117,14 @@
       "claude",
       "perplexity",
       "mcp",
+      "add-mcp",
       "cursor",
       "vscode"
     ]
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "github": "https://github.com/pally-ai"
     }
   }
 }

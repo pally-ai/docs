@@ -1,0 +1,42 @@
+---
+title: "Core concepts"
+description: "Understand organizations, connections, API keys, scopes, runtimes, and MCP grants."
+---
+
+## Organizations
+
+An organization owns WhatsApp connections, API keys, MCP grants, webhooks, usage, and billing state. Personal use still happens through an organization with one member.
+
+## Connections
+
+A connection is one WhatsApp account pairing. Each connection has its own runtime state and pairing lifecycle. Organizations can create multiple connections when they need multiple WhatsApp accounts.
+
+API keys can be scoped to one or more connection IDs. If a key allows only one connection, API requests can omit a connection selector. If a key allows multiple connections, send `X-WhatsApp-Use-Connection-Id` with the connection ID you want to use.
+
+## API keys
+
+API keys are organization credentials. The full secret is shown once when the key is created. After that, the platform stores only a verifier and public metadata.
+
+Use the `Authorization` header:
+
+```http
+Authorization: Bearer pa_live_...
+```
+
+## Scopes
+
+Scopes control which APIs a key or MCP grant can use.
+
+| Scope | Allows |
+| --- | --- |
+| `whatsapp:read` | Read status, pairing state, conversations, messages, contacts, media, and command status. |
+| `whatsapp:write` | Start pairing, send messages, react, edit, delete, mark read, manage groups, unlink, and enqueue commands. |
+| `webhooks:manage` | Create, update, delete, test, and inspect webhook endpoints and deliveries. |
+
+## Runtimes
+
+The backend provisions a private runtime for each WhatsApp connection. The runtime uses whatsmeow to connect to WhatsApp, stores durable connection state, and exposes private REST/MCP endpoints to the platform backend.
+
+## MCP grants
+
+MCP clients authenticate with OAuth. A grant binds the MCP client to a resource, scopes, organization, API key, and connection runtime. API keys are not accepted directly by MCP clients.

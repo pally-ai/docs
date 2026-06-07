@@ -1,0 +1,58 @@
+---
+title: "MCP tools"
+description: "Reference for WhatsApp tools exposed by the remote MCP server."
+---
+
+The WhatsApp MCP server exposes these tools.
+
+## Connection and pairing
+
+| Tool | Description |
+| --- | --- |
+| `whatsapp_status` | Get connection, pairing, and connector status. |
+| `whatsapp_request_pair` | Start WhatsApp pairing and return the pairing request result. |
+| `whatsapp_pair_status` | Read the current pairing status and QR payload. |
+| `whatsapp_unlink` | Unlink the paired WhatsApp device and clear local WhatsApp state. |
+
+## Sync and read
+
+| Tool | Required arguments | Description |
+| --- | --- | --- |
+| `whatsapp_sync` | None | Read changed conversations, contacts, and messages after a sync cursor. Optional `cursor` and `limit`. |
+| `whatsapp_list_messages` | `conversation_id` | List messages in a WhatsApp conversation. Optional `before_message_id` and `limit`. |
+| `whatsapp_download_media` | `message_id` | Download media for a message as base64 plus MIME metadata. |
+
+## Messages
+
+| Tool | Required arguments | Description |
+| --- | --- | --- |
+| `whatsapp_send_message` | `text` plus `conversation_id` or `contact_id` | Send a WhatsApp text message. |
+| `whatsapp_react_to_message` | `message_id` plus `conversation_id` or `to` | React to a message. Empty `emoji` clears the reaction. |
+| `whatsapp_edit_message` | `message_id`, `text`, plus `conversation_id` or `to` | Edit a sent message. |
+| `whatsapp_delete_message` | `message_id` plus `conversation_id` or `to` | Delete or revoke a sent message. |
+| `whatsapp_mark_read` | `message_ids` plus `conversation_id` or `to` | Mark messages as read. |
+
+## Groups and commands
+
+| Tool | Required arguments | Description |
+| --- | --- | --- |
+| `whatsapp_create_group` | `name`, `participants` | Create a WhatsApp group. Optional `announce` and `locked`. |
+| `whatsapp_update_group_participants` | `group_jid`, `participants`, `action` | Add, remove, promote, or demote group participants. |
+| `whatsapp_enqueue_command` | `kind` | Queue a raw WhatsApp command. |
+| `whatsapp_command_status` | `command_id` | Read queued command status and result. |
+
+## Example tool request
+
+```json
+{
+  "name": "whatsapp_send_message",
+  "arguments": {
+    "contact_id": "14155550123@s.whatsapp.net",
+    "text": "Hello from an MCP client"
+  }
+}
+```
+
+<Info>
+  Tool availability depends on the OAuth grant scopes and the selected connection runtime.
+</Info>

@@ -1,0 +1,973 @@
+openapi: 3.1.0
+info:
+  title: WhatsApp Use API
+  version: 0.1.0
+  description: REST API for WhatsApp Use organizations, connections, messages, media, usage, and webhooks.
+servers:
+  - url: https://api.whatsapp-use.com
+    description: Production
+  - url: https://api.staging.whatsapp-use.com
+    description: Staging
+security:
+  - bearerAuth: []
+tags:
+  - name: Account
+  - name: WhatsApp
+  - name: Commands
+  - name: Webhooks
+  - name: Usage
+paths:
+  /v1/me:
+    get:
+      tags: [Account]
+      summary: Inspect API key and runtime
+      operationId: getMe
+      responses:
+        "200":
+          description: API key metadata, runtime, runtime health, and endpoint paths.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /v1/usage:
+    get:
+      tags: [Usage]
+      summary: List usage for the current API key
+      operationId: listUsage
+      parameters:
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: Usage records and summary.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/APIUsageRecord"
+                  summary:
+                    type: object
+                    additionalProperties: true
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /v1/whatsapp/status:
+    get:
+      tags: [WhatsApp]
+      summary: Get WhatsApp connection status
+      operationId: getWhatsAppStatus
+      parameters:
+        - $ref: "#/components/parameters/ConnectionIdHeader"
+      responses:
+        "200":
+          description: WhatsApp status.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WhatsAppStatus"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /v1/whatsapp/pair:
+    post:
+      tags: [WhatsApp]
+      summary: Start WhatsApp pairing
+      operationId: requestWhatsAppPairing
+      parameters:
+        - $ref: "#/components/parameters/ConnectionIdHeader"
+      responses:
+        "202":
+          description: Pairing request accepted.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /v1/whatsapp/pair/status:
+    get:
+      tags: [WhatsApp]
+      summary: Get WhatsApp pairing status
+      operationId: getWhatsAppPairingStatus
+      parameters:
+        - $ref: "#/components/parameters/ConnectionIdHeader"
+      responses:
+        "200":
+          description: Current pairing state.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PairState"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /v1/whatsapp/sync:
+    get:
+      tags: [WhatsApp]
+      summary: Sync changed WhatsApp records
+      operationId: syncWhatsApp
+      parameters:
+        - $ref: "#/components/parameters/ConnectionIdHeader"
+        - name: cursor
+          in: query
+          schema:
+            type: integer
+            format: int64
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: Changed conversations, contacts, messages, and next cursor.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SyncResult"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /v1/whatsapp/conversations:
+    get:
+      tags: [WhatsApp]
+      summary: List conversations
+      operationId: listConversations
+      parameters:
+        - $ref: "#/components/parameters/ConnectionIdHeader"
+      responses:
+        "200":
+          description: Conversations.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Conversation"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /v1/whatsapp/contacts:
+    get:
+      tags: [WhatsApp]
+      summary: List contacts
+      operationId: listContacts
+      parameters:
+        - $ref: "#/components/parameters/ConnectionIdHeader"
+      responses:
+        "200":
+          description: Contacts.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Contact"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /v1/whatsapp/conversations/{conversation_id}/messages:
+    get:
+      tags: [WhatsApp]
+      summary: List conversation messages
+      operationId: listConversationMessages
+      parameters:
+        - $ref: "#/components/parameters/ConnectionIdHeader"
+        - name: conversation_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: before_message_id
+          in: query
+          schema:
+            type: string
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: Message page.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessagePage"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /v1/whatsapp/messages/send:
+    post:
+      tags: [WhatsApp]
+      summary: Send a text message
+      operationId: sendMessage
+      parameters:
+        - $ref: "#/components/parameters/ConnectionIdHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SendMessageRequest"
+      responses:
+        "202":
+          description: Message accepted.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /v1/whatsapp/messages/react:
+    post:
+      tags: [WhatsApp]
+      summary: React to a message
+      operationId: reactToMessage
+      parameters:
+        - $ref: "#/components/parameters/ConnectionIdHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MessageActionRequest"
+      responses:
+        "202":
+          $ref: "#/components/responses/CommandAccepted"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+  /v1/whatsapp/messages/edit:
+    post:
+      tags: [WhatsApp]
+      summary: Edit a message
+      operationId: editMessage
+      parameters:
+        - $ref: "#/components/parameters/ConnectionIdHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EditMessageRequest"
+      responses:
+        "202":
+          $ref: "#/components/responses/CommandAccepted"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+  /v1/whatsapp/messages/delete:
+    post:
+      tags: [WhatsApp]
+      summary: Delete or revoke a message
+      operationId: deleteMessage
+      parameters:
+        - $ref: "#/components/parameters/ConnectionIdHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MessageActionRequest"
+      responses:
+        "202":
+          $ref: "#/components/responses/CommandAccepted"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+  /v1/whatsapp/messages/read:
+    post:
+      tags: [WhatsApp]
+      summary: Mark messages as read
+      operationId: markMessagesRead
+      parameters:
+        - $ref: "#/components/parameters/ConnectionIdHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MarkReadRequest"
+      responses:
+        "202":
+          $ref: "#/components/responses/CommandAccepted"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+  /v1/whatsapp/conversations/{conversation_id}/read:
+    post:
+      tags: [WhatsApp]
+      summary: Mark conversation messages as read
+      operationId: markConversationRead
+      parameters:
+        - $ref: "#/components/parameters/ConnectionIdHeader"
+        - name: conversation_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MarkReadRequest"
+      responses:
+        "202":
+          $ref: "#/components/responses/CommandAccepted"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+  /v1/whatsapp/groups:
+    post:
+      tags: [WhatsApp]
+      summary: Create a group
+      operationId: createGroup
+      parameters:
+        - $ref: "#/components/parameters/ConnectionIdHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateGroupRequest"
+      responses:
+        "202":
+          $ref: "#/components/responses/CommandAccepted"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+  /v1/whatsapp/groups/{group_jid}/participants:
+    post:
+      tags: [WhatsApp]
+      summary: Update group participants
+      operationId: updateGroupParticipants
+      parameters:
+        - $ref: "#/components/parameters/ConnectionIdHeader"
+        - name: group_jid
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateGroupParticipantsRequest"
+      responses:
+        "202":
+          $ref: "#/components/responses/CommandAccepted"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+  /v1/whatsapp/unlink:
+    post:
+      tags: [WhatsApp]
+      summary: Unlink WhatsApp
+      operationId: unlinkWhatsApp
+      parameters:
+        - $ref: "#/components/parameters/ConnectionIdHeader"
+      responses:
+        "202":
+          $ref: "#/components/responses/CommandAccepted"
+  /v1/whatsapp/commands:
+    post:
+      tags: [Commands]
+      summary: Enqueue a raw WhatsApp command
+      operationId: enqueueCommand
+      parameters:
+        - $ref: "#/components/parameters/ConnectionIdHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [kind]
+              properties:
+                kind:
+                  type: string
+                payload:
+                  type: object
+                  additionalProperties: true
+      responses:
+        "202":
+          $ref: "#/components/responses/CommandAccepted"
+  /v1/whatsapp/commands/{command_id}:
+    get:
+      tags: [Commands]
+      summary: Get command status
+      operationId: getCommand
+      parameters:
+        - $ref: "#/components/parameters/ConnectionIdHeader"
+        - name: command_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Command record.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommandRecord"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /v1/whatsapp/media/{message_id}:
+    get:
+      tags: [WhatsApp]
+      summary: Download message media
+      operationId: downloadMedia
+      parameters:
+        - $ref: "#/components/parameters/ConnectionIdHeader"
+        - name: message_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Media bytes.
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /v1/webhooks/endpoints:
+    get:
+      tags: [Webhooks]
+      summary: List webhook endpoints
+      operationId: listWebhookEndpoints
+      responses:
+        "200":
+          description: Webhook endpoints.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/WebhookEndpoint"
+    post:
+      tags: [Webhooks]
+      summary: Create a webhook endpoint
+      operationId: createWebhookEndpoint
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WebhookEndpointRequest"
+      responses:
+        "201":
+          description: Created endpoint. The secret is only returned on creation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  endpoint:
+                    $ref: "#/components/schemas/WebhookEndpoint"
+  /v1/webhooks/endpoints/{endpoint_id}:
+    patch:
+      tags: [Webhooks]
+      summary: Update a webhook endpoint
+      operationId: updateWebhookEndpoint
+      parameters:
+        - name: endpoint_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WebhookEndpointRequest"
+      responses:
+        "200":
+          description: Updated endpoint.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  endpoint:
+                    $ref: "#/components/schemas/WebhookEndpoint"
+    delete:
+      tags: [Webhooks]
+      summary: Delete a webhook endpoint
+      operationId: deleteWebhookEndpoint
+      parameters:
+        - name: endpoint_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Deleted endpoint.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  endpoint:
+                    $ref: "#/components/schemas/WebhookEndpoint"
+  /v1/webhooks/endpoints/{endpoint_id}/test:
+    post:
+      tags: [Webhooks]
+      summary: Send a test webhook
+      operationId: testWebhookEndpoint
+      parameters:
+        - name: endpoint_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Test event and delivery.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v1/webhooks/deliveries:
+    get:
+      tags: [Webhooks]
+      summary: List webhook deliveries
+      operationId: listWebhookDeliveries
+      parameters:
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: Webhook deliveries.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/WebhookDelivery"
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: API key
+  parameters:
+    ConnectionIdHeader:
+      name: X-WhatsApp-Use-Connection-Id
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Required when the API key can access multiple WhatsApp connections.
+    Limit:
+      name: limit
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+  responses:
+    Unauthorized:
+      description: Invalid API key or missing scope.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    BadRequest:
+      description: Invalid request.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    NotFound:
+      description: Resource not found.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    CommandAccepted:
+      description: Command accepted.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              command_id:
+                type: string
+              kind:
+                type: string
+              command:
+                $ref: "#/components/schemas/CommandRecord"
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+    WhatsAppStatus:
+      type: object
+      properties:
+        paired:
+          type: boolean
+        connected:
+          type: boolean
+        jid:
+          type: string
+        last_connected_at:
+          type: string
+        connector:
+          type: string
+        connector_ready:
+          type: boolean
+        connector_error:
+          type: string
+    PairState:
+      type: object
+      properties:
+        status:
+          type: string
+        qr:
+          type: string
+        error:
+          type: string
+    Conversation:
+      type: object
+      properties:
+        conversation_id:
+          type: string
+        chat_jid:
+          type: string
+        kind:
+          type: string
+        subject:
+          type: string
+        direct_person_id:
+          type: string
+        is_archived:
+          type: boolean
+        last_message_at:
+          type: string
+          format: date-time
+        participants:
+          type: array
+          items:
+            type: object
+            properties:
+              participant_jid:
+                type: string
+              person_id:
+                type: string
+              role:
+                type: string
+        seq:
+          type: integer
+          format: int64
+    Contact:
+      type: object
+      properties:
+        person_id:
+          type: string
+        display_name:
+          type: string
+        first_name:
+          type: string
+        last_name:
+          type: string
+        company:
+          type: string
+        whatsapp_push_name:
+          type: string
+        phone_e164:
+          type: string
+        phone_jid:
+          type: string
+        lid_jid:
+          type: string
+    Message:
+      type: object
+      properties:
+        message_id:
+          type: string
+        conversation_id:
+          type: string
+        chat_jid:
+          type: string
+        wa_message_id:
+          type: string
+        sender_jid:
+          type: string
+        sender_push_name:
+          type: string
+        direction:
+          type: string
+        is_from_me:
+          type: boolean
+        content_type:
+          type: string
+        body:
+          type: string
+        status:
+          type: string
+        reply_to_wa_id:
+          type: string
+        reactions:
+          type: object
+          additionalProperties: true
+        media:
+          type: object
+          additionalProperties: true
+        sent_at:
+          type: string
+          format: date-time
+        received_at:
+          type: string
+          format: date-time
+        edited_at:
+          type: string
+          format: date-time
+        deleted_at:
+          type: string
+          format: date-time
+        seq:
+          type: integer
+          format: int64
+    SyncResult:
+      type: object
+      properties:
+        conversations:
+          type: array
+          items:
+            $ref: "#/components/schemas/Conversation"
+        contacts:
+          type: array
+          items:
+            $ref: "#/components/schemas/Contact"
+        messages:
+          type: array
+          items:
+            $ref: "#/components/schemas/Message"
+        cursor:
+          type: integer
+          format: int64
+        has_more:
+          type: boolean
+    MessagePage:
+      type: object
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: "#/components/schemas/Message"
+        contacts:
+          type: array
+          items:
+            $ref: "#/components/schemas/Contact"
+        has_more:
+          type: boolean
+    SendMessageRequest:
+      type: object
+      required: [text]
+      properties:
+        conversation_id:
+          type: string
+        contact_id:
+          type: string
+        text:
+          type: string
+    MessageActionRequest:
+      type: object
+      required: [message_id]
+      properties:
+        conversation_id:
+          type: string
+        to:
+          type: string
+        contact_id:
+          type: string
+        message_id:
+          type: string
+        wa_message_id:
+          type: string
+        target_wa_id:
+          type: string
+        sender:
+          type: string
+        emoji:
+          type: string
+    EditMessageRequest:
+      allOf:
+        - $ref: "#/components/schemas/MessageActionRequest"
+        - type: object
+          required: [text]
+          properties:
+            text:
+              type: string
+    MarkReadRequest:
+      type: object
+      required: [message_ids]
+      properties:
+        conversation_id:
+          type: string
+        to:
+          type: string
+        contact_id:
+          type: string
+        sender:
+          type: string
+        message_ids:
+          type: array
+          items:
+            type: string
+    CreateGroupRequest:
+      type: object
+      required: [name, participants]
+      properties:
+        name:
+          type: string
+        participants:
+          type: array
+          items:
+            type: string
+        announce:
+          type: boolean
+        locked:
+          type: boolean
+    UpdateGroupParticipantsRequest:
+      type: object
+      required: [participants, action]
+      properties:
+        participants:
+          type: array
+          items:
+            type: string
+        action:
+          type: string
+          enum: [add, remove, promote, demote]
+        chat_jid:
+          type: string
+    CommandRecord:
+      type: object
+      properties:
+        id:
+          type: string
+        kind:
+          type: string
+        payload:
+          type: object
+          additionalProperties: true
+        status:
+          type: string
+        result:
+          type: object
+          additionalProperties: true
+        error:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        claimed_at:
+          type: string
+          format: date-time
+        completed_at:
+          type: string
+          format: date-time
+    WebhookEndpointRequest:
+      type: object
+      required: [url]
+      properties:
+        url:
+          type: string
+          format: uri
+        description:
+          type: string
+        event_types:
+          type: array
+          items:
+            type: string
+        enabled:
+          type: boolean
+    WebhookEndpoint:
+      type: object
+      properties:
+        id:
+          type: string
+        user_id:
+          type: string
+        url:
+          type: string
+        description:
+          type: string
+        event_types:
+          type: array
+          items:
+            type: string
+        secret:
+          type: string
+        enabled:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    WebhookDelivery:
+      type: object
+      properties:
+        id:
+          type: string
+        endpoint_id:
+          type: string
+        event_id:
+          type: string
+        event_type:
+          type: string
+        status:
+          type: string
+        status_code:
+          type: integer
+        error:
+          type: string
+        attempts:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        delivered_at:
+          type: string
+          format: date-time
+    APIUsageRecord:
+      type: object
+      properties:
+        id:
+          type: string
+        api_key_id:
+          type: string
+        target:
+          type: string
+        method:
+          type: string
+        path:
+          type: string
+        status_code:
+          type: integer
+        duration_ms:
+          type: integer
+        request_bytes:
+          type: integer
+        response_bytes:
+          type: integer
+        error:
+          type: string
+        created_at:
+          type: string
+          format: date-time

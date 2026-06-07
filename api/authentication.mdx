@@ -1,0 +1,38 @@
+---
+title: "Authentication"
+description: "Authenticate REST API calls with organization API keys."
+---
+
+REST API calls use API keys. Create keys in the platform dashboard.
+
+```http
+Authorization: Bearer pa_live_...
+```
+
+## API key visibility
+
+The key secret is shown once when the key is created. Store it immediately. After creation, the dashboard shows only public metadata such as the key ID, prefix, scopes, connection IDs, creation time, and revocation state.
+
+## Scopes
+
+The backend checks scopes at the public API edge.
+
+| Scope | Use it for |
+| --- | --- |
+| `whatsapp:read` | Status, sync, conversations, contacts, messages, media, command status, and MCP WhatsApp read grants. |
+| `whatsapp:write` | Pairing, sends, reactions, edits, deletes, read receipts, groups, unlink, and command enqueue. |
+| `webhooks:manage` | Webhook endpoints and delivery history. |
+
+## Connection selection
+
+API keys are organization-wide credentials with an allowlist of connection IDs.
+
+If the key has one connection, requests target that connection automatically. If the key has more than one connection, send:
+
+```http
+X-WhatsApp-Use-Connection-Id: conn_...
+```
+
+## MCP authentication
+
+MCP clients do not use REST API keys. They authenticate with OAuth and receive a grant bound to a connection runtime.

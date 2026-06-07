@@ -1,47 +1,84 @@
 ---
 title: "Quickstart"
-description: "Begin with a guide on the fastest path to a successful outcome"
+description: "Create an API key, pair WhatsApp, and send your first message."
 ---
 
-Describe how someone begins using your product. What is the first thing they need to do? Are there any prerequisites?
+This guide uses the REST API. Use the dashboard to create the API key, because the key secret is only shown once.
 
-A quickstart should take someone from zero to using your product. They'll get a quick win and a sense of what they can accomplish.
+## Before you begin
 
-## Prerequisites
+You need:
 
-Before you begin, you must have:
+- A WhatsApp Use account and organization.
+- A WhatsApp account available on your phone.
+- An API key with `whatsapp:read` and `whatsapp:write` scopes.
 
-- Requirement one (for example, Node.js 18+, a free account, an API key)
-- Requirement two (for example, a compatible device, a compatible browser, a compatible operating system)
+## 1. Set environment variables
 
-## Get started
+Use the staging API while testing. Use production when your organization is ready.
 
-<Steps>
-  <Step title="Install">
-    Describe how to install your product or sign up.
+```bash
+export WHATSAPP_USE_BASE_URL="https://api.staging.whatsapp-use.com"
+export WHATSAPP_USE_API_KEY="pa_test_..."
+```
 
-    ```bash
-    npm install your-package
-    ```
-  </Step>
-  <Step title="Configure">
-    Describe any setup or configuration needed before first use.
+## 2. Inspect your key
 
-    ```bash
-    your-cli init
-    ```
-  </Step>
-  <Step title="Run it">
-    Show the first thing a user does to see it working.
+```bash
+curl -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
+  "$WHATSAPP_USE_BASE_URL/v1/me"
+```
 
-    ```bash
-    your-cli start
-    ```
-  </Step>
-</Steps>
+The response includes your organization, key metadata, runtime, and public endpoint paths.
 
-<Tip>
-  Give people a way to get help. This could be a link to a support page, a chat with a customer support agent, or a forum for your product.
+## 3. Start WhatsApp pairing
 
-  Example: Need help? Reach out to us at [support@yourcompany.com](mailto:support@yourcompany.com).
-</Tip>
+```bash
+curl -X POST \
+  -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
+  "$WHATSAPP_USE_BASE_URL/v1/whatsapp/pair"
+```
+
+Then poll for the QR payload:
+
+```bash
+curl -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
+  "$WHATSAPP_USE_BASE_URL/v1/whatsapp/pair/status"
+```
+
+Render the returned QR value in your UI, or pair from the WhatsApp Use dashboard.
+
+## 4. Check connection status
+
+```bash
+curl -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
+  "$WHATSAPP_USE_BASE_URL/v1/whatsapp/status"
+```
+
+When pairing succeeds, `paired` is `true`. `connected` is `true` when the runtime currently has an active WhatsApp socket.
+
+## 5. Send a message
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
+  -H "Content-Type: application/json" \
+  "$WHATSAPP_USE_BASE_URL/v1/whatsapp/messages/send" \
+  -d '{
+    "contact_id": "14155550123@s.whatsapp.net",
+    "text": "Hello from WhatsApp Use"
+  }'
+```
+
+Use `conversation_id` instead of `contact_id` when replying to an existing conversation returned by `/v1/whatsapp/conversations` or `/v1/whatsapp/sync`.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Pair WhatsApp" icon="qr-code" href="/guides/pair-whatsapp">
+    Build a dashboard or CLI pairing flow.
+  </Card>
+  <Card title="Use MCP" icon="bot" href="/mcp/install">
+    Connect an AI client to WhatsApp Use.
+  </Card>
+</CardGroup>

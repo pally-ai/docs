@@ -5,6 +5,22 @@ description: "Receive WhatsApp events at your own endpoint."
 
 Webhook endpoints let your application receive events from WhatsApp Use.
 
+## Events
+
+Use `["*"]` to receive every event, or subscribe to specific event types.
+
+| Event | When it fires |
+| --- | --- |
+| `whatsapp.message.received` | A connected WhatsApp account receives a new message. |
+| `whatsapp.message.sent` | WhatsApp Use sends a message through a connected account. |
+| `whatsapp.message.reaction_received` | Someone reacts to a stored WhatsApp message. |
+| `whatsapp.message.edited` | A stored WhatsApp message is edited. |
+| `whatsapp.message.deleted` | A stored WhatsApp message is revoked or deleted. |
+| `whatsapp.message.receipt_updated` | A message moves to delivered or read. |
+| `whatsapp.connection.status_changed` | Pairing, reconnect, disconnect, or setup state changes. |
+| `whatsapp.command.completed` | A runtime command finishes successfully. |
+| `whatsapp.command.failed` | A runtime command fails before completion. |
+
 ## Create an endpoint
 
 Use an API key with `webhooks:manage`.
@@ -30,15 +46,30 @@ Webhook requests use JSON:
 
 ```json
 {
-  "id": "evt_20260606173000.000000000",
-  "type": "whatsapp.connection.status_changed",
-  "source": "whatsapp",
-  "user_id": "org_...",
+  "id": "evt_20260608093000",
+  "type": "whatsapp.message.received",
+  "source": "runtime",
+  "user_id": "user_123",
   "api_key_id": "key_...",
   "payload": {
-    "status": "paired"
+    "message": {
+      "message_id": "msg_wa_inbound_01",
+      "conversation_id": "conv_15555550123",
+      "chat_jid": "15555550123@s.whatsapp.net",
+      "wa_message_id": "3EB0EXAMPLE",
+      "sender_jid": "15555550123@s.whatsapp.net",
+      "sender_person_id": "person_15555550123",
+      "sender_push_name": "Test Contact",
+      "direction": "incoming",
+      "is_from_me": false,
+      "content_type": "text",
+      "body": "Can you send the invoice?",
+      "status": "received",
+      "sent_at": "2026-06-08T09:29:58Z",
+      "received_at": "2026-06-08T09:30:00Z"
+    }
   },
-  "occurred_at": "2026-06-06T17:30:00Z"
+  "occurred_at": "2026-06-08T09:30:00Z"
 }
 ```
 
@@ -54,6 +85,8 @@ Each delivery includes:
 | `X-Whatsapp-Use-Signature` | Signature in the form `t=<timestamp>,v1=<signature>`. |
 
 ## Test an endpoint
+
+The test endpoint sends a signed sample `whatsapp.message.received` payload directly to the saved endpoint URL. Use it to confirm your receiver, signature verification, and logs before waiting for live WhatsApp traffic.
 
 ```bash
 curl -X POST \

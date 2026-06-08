@@ -493,7 +493,7 @@ paths:
   /v1/webhooks/endpoints/{endpoint_id}/test:
     post:
       tags: [Webhooks]
-      summary: Send a test webhook
+      summary: Send a sample message webhook to the endpoint URL
       operationId: testWebhookEndpoint
       parameters:
         - name: endpoint_id
@@ -865,8 +865,20 @@ components:
           type: string
         event_types:
           type: array
+          description: Use "*" for every event, or subscribe to specific WhatsApp Use webhook event types.
           items:
             type: string
+            enum:
+              - "*"
+              - whatsapp.message.received
+              - whatsapp.message.sent
+              - whatsapp.message.reaction_received
+              - whatsapp.message.edited
+              - whatsapp.message.deleted
+              - whatsapp.message.receipt_updated
+              - whatsapp.connection.status_changed
+              - whatsapp.command.completed
+              - whatsapp.command.failed
         enabled:
           type: boolean
     WebhookEndpoint:
@@ -884,6 +896,17 @@ components:
           type: array
           items:
             type: string
+            enum:
+              - "*"
+              - whatsapp.message.received
+              - whatsapp.message.sent
+              - whatsapp.message.reaction_received
+              - whatsapp.message.edited
+              - whatsapp.message.deleted
+              - whatsapp.message.receipt_updated
+              - whatsapp.connection.status_changed
+              - whatsapp.command.completed
+              - whatsapp.command.failed
         secret:
           type: string
         enabled:

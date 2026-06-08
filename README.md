@@ -10,6 +10,7 @@ The live docs are hosted at `https://docs.whatsapp-use.com`.
 - `dev` is used for docs changes before promotion.
 
 Public docs should describe the production product only. Do not document non-production URLs, internal services, local-only flows, or unreleased product surfaces.
+Do not document `admin.whatsapp-use.com` or internal admin APIs in public docs.
 
 ## Local development
 

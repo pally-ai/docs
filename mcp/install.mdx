@@ -3,20 +3,43 @@ title: "Install MCP"
 description: "Connect an MCP client to the WhatsApp Use remote MCP server."
 ---
 
-Use this remote MCP URL:
+Use WhatsApp Use as a hosted MCP server from an MCP client that supports remote Streamable HTTP over HTTPS.
 
-```text
-https://api.whatsapp-use.com/mcp/whatsapp
-```
+## Client commands
+
+Use the command for your MCP client:
+
+<Tabs>
+  <Tab title="Claude Code">
+    ```bash
+    claude mcp add --transport http whatsapp-use https://api.whatsapp-use.com/mcp/whatsapp
+    ```
+
+    To make the server available across Claude Code projects on your machine, add `--scope user`.
+  </Tab>
+  <Tab title="Codex">
+    ```bash
+    codex mcp add whatsapp-use --url https://api.whatsapp-use.com/mcp/whatsapp
+    ```
+
+    If Codex asks you to authenticate later, run:
+
+    ```bash
+    codex mcp login whatsapp-use
+    ```
+  </Tab>
+</Tabs>
+
+Your client opens a browser to complete OAuth when it needs authorization.
 
 ## Generic setup
 
-Use these values in any client that supports remote HTTP MCP servers:
+Use these values in any MCP client that supports remote Streamable HTTP over HTTPS:
 
 | Setting | Value |
 | --- | --- |
 | Name | `whatsapp-use` |
-| Transport | HTTP or Streamable HTTP |
+| Transport | Streamable HTTP over HTTPS |
 | URL | `https://api.whatsapp-use.com/mcp/whatsapp` |
 | Authentication | OAuth |
 
@@ -32,30 +55,6 @@ If your client uses JSON configuration, the server entry usually looks like this
   }
 }
 ```
-
-<Note>
-  MCP clients use different config file locations and command names. The URL, transport, and OAuth behavior are the stable parts.
-</Note>
-
-## Optional client commands
-
-These are optional shortcuts. The generic URL and JSON config above are the source of truth.
-
-<Tabs>
-  <Tab title="Claude Code">
-    ```bash
-    claude mcp add --transport http --scope user whatsapp-use https://api.whatsapp-use.com/mcp/whatsapp
-    ```
-  </Tab>
-  <Tab title="Codex">
-    ```bash
-    codex mcp add whatsapp-use --url https://api.whatsapp-use.com/mcp/whatsapp
-    codex mcp login whatsapp-use
-    ```
-  </Tab>
-</Tabs>
-
-Your client opens a browser when OAuth authorization is required.
 
 ## Install flow
 

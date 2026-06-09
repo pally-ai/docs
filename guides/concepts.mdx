@@ -13,6 +13,10 @@ A connection is one WhatsApp account pairing. Each connection has its own pairin
 
 API keys can be scoped to one or more connection IDs. If a key allows only one connection, API requests can omit a connection selector. If a key allows multiple connections, send `X-WhatsApp-Use-Connection-Id` with the connection ID you want to use.
 
+## Message history
+
+Sync and message APIs serve the most recent 30 days of messages for a connection. Older messages, including older history imported when an account first pairs, are not stored. If your product needs longer history, persist messages on your side as they arrive through sync or webhooks.
+
 ## API keys
 
 API keys are organization credentials. The full secret is shown once when the key is created. After that, the platform stores only a verifier and public metadata.

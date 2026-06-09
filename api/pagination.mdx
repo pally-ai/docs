@@ -1,0 +1,138 @@
+---
+title: "Pagination and cursors"
+description: "Use limits, sync cursors, and message anchors."
+---
+
+WhatsApp Use uses small, endpoint-specific pagination controls.
+
+## Sync cursor
+
+`GET /v1/whatsapp/sync` returns changed conversations, contacts, and messages.
+
+<CodeGroup dropdown>
+
+```bash cURL
+curl -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
+  "$WHATSAPP_USE_BASE_URL/v1/whatsapp/sync?cursor=0&limit=50"
+```
+
+```python Python
+import os
+import requests
+
+res = requests.get(
+    f"{os.environ['WHATSAPP_USE_BASE_URL']}/v1/whatsapp/sync",
+    headers={"Authorization": f"Bearer {os.environ['WHATSAPP_USE_API_KEY']}"},
+    params={"cursor": "0", "limit": 50},
+)
+res.raise_for_status()
+print(res.json())
+```
+
+```javascript JavaScript
+const url = new URL(`${process.env.WHATSAPP_USE_BASE_URL}/v1/whatsapp/sync`);
+url.searchParams.set("cursor", "0");
+url.searchParams.set("limit", "50");
+
+const res = await fetch(url, {
+  headers: { Authorization: `Bearer ${process.env.WHATSAPP_USE_API_KEY}` },
+});
+
+console.log(await res.json());
+```
+
+```go Go
+package main
+
+import (
+	"fmt"
+	"io"
+	"net/http"
+	"os"
+)
+
+func main() {
+	req, _ := http.NewRequest("GET", os.Getenv("WHATSAPP_USE_BASE_URL")+"/v1/whatsapp/sync?cursor=0&limit=50", nil)
+	req.Header.Set("Authorization", "Bearer "+os.Getenv("WHATSAPP_USE_API_KEY"))
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+	out, _ := io.ReadAll(resp.Body)
+	fmt.Println(string(out))
+}
+```
+
+</CodeGroup>
+
+Store the returned `cursor`. Send it on the next sync request.
+
+## Message pages
+
+Conversation messages use an optional anchor:
+
+<CodeGroup dropdown>
+
+```bash cURL
+curl -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
+  "$WHATSAPP_USE_BASE_URL/v1/whatsapp/conversations/conv_123/messages?before_message_id=msg_123&limit=50"
+```
+
+```python Python
+import os
+import requests
+
+res = requests.get(
+    f"{os.environ['WHATSAPP_USE_BASE_URL']}/v1/whatsapp/conversations/conv_123/messages",
+    headers={"Authorization": f"Bearer {os.environ['WHATSAPP_USE_API_KEY']}"},
+    params={"before_message_id": "msg_123", "limit": 50},
+)
+res.raise_for_status()
+print(res.json())
+```
+
+```javascript JavaScript
+const url = new URL(`${process.env.WHATSAPP_USE_BASE_URL}/v1/whatsapp/conversations/conv_123/messages`);
+url.searchParams.set("before_message_id", "msg_123");
+url.searchParams.set("limit", "50");
+
+const res = await fetch(url, {
+  headers: { Authorization: `Bearer ${process.env.WHATSAPP_USE_API_KEY}` },
+});
+
+console.log(await res.json());
+```
+
+```go Go
+package main
+
+import (
+	"fmt"
+	"io"
+	"net/http"
+	"os"
+)
+
+func main() {
+	req, _ := http.NewRequest("GET", os.Getenv("WHATSAPP_USE_BASE_URL")+"/v1/whatsapp/conversations/conv_123/messages?before_message_id=msg_123&limit=50", nil)
+	req.Header.Set("Authorization", "Bearer "+os.Getenv("WHATSAPP_USE_API_KEY"))
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+	out, _ := io.ReadAll(resp.Body)
+	fmt.Println(string(out))
+}
+```
+
+</CodeGroup>
+
+Use `before_message_id` to page backward through a conversation.
+
+## Delivery and usage lists
+
+Webhook deliveries and usage endpoints accept `limit`. If omitted, the API chooses a default page size.

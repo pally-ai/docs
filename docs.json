@@ -38,7 +38,7 @@
       "expanded": "all"
     },
     "examples": {
-      "languages": ["curl", "javascript", "python", "go"],
+      "languages": ["curl", "python", "javascript", "go"],
       "defaults": "required",
       "prefill": true
     }
@@ -72,7 +72,10 @@
             "pages": [
               "api/authentication",
               "api/connections",
-              "api/scopes"
+              "api/scopes",
+              "api/errors",
+              "api/pagination",
+              "api/media"
             ]
           },
           {
@@ -171,6 +174,10 @@
   },
   "navbar": {
     "links": [
+      {
+        "label": "Docs home",
+        "href": "/"
+      },
       {
         "label": "Platform",
         "href": "https://platform.whatsapp-use.com"

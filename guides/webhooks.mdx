@@ -25,7 +25,9 @@ Use `["*"]` to receive every event, or subscribe to specific event types.
 
 Use an API key with `webhooks:manage`.
 
-```bash
+<CodeGroup dropdown>
+
+```bash cURL
 curl -X POST \
   -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
   -H "Content-Type: application/json" \
@@ -37,6 +39,71 @@ curl -X POST \
     "enabled": true
   }'
 ```
+
+```javascript JavaScript
+const res = await fetch(`${process.env.WHATSAPP_USE_BASE_URL}/v1/webhooks/endpoints`, {
+  method: "POST",
+  headers: {
+    Authorization: `Bearer ${process.env.WHATSAPP_USE_API_KEY}`,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    url: "https://example.com/webhooks/whatsapp-use",
+    description: "Production webhook",
+    event_types: ["*"],
+    enabled: true,
+  }),
+});
+
+console.log(await res.json());
+```
+
+```python Python
+import os
+import requests
+
+res = requests.post(
+    f"{os.environ['WHATSAPP_USE_BASE_URL']}/v1/webhooks/endpoints",
+    headers={"Authorization": f"Bearer {os.environ['WHATSAPP_USE_API_KEY']}"},
+    json={
+        "url": "https://example.com/webhooks/whatsapp-use",
+        "description": "Production webhook",
+        "event_types": ["*"],
+        "enabled": True,
+    },
+)
+res.raise_for_status()
+print(res.json())
+```
+
+```go Go
+package main
+
+import (
+	"bytes"
+	"fmt"
+	"io"
+	"net/http"
+	"os"
+)
+
+func main() {
+	body := []byte(`{"url":"https://example.com/webhooks/whatsapp-use","description":"Production webhook","event_types":["*"],"enabled":true}`)
+	req, _ := http.NewRequest("POST", os.Getenv("WHATSAPP_USE_BASE_URL")+"/v1/webhooks/endpoints", bytes.NewReader(body))
+	req.Header.Set("Authorization", "Bearer "+os.Getenv("WHATSAPP_USE_API_KEY"))
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+	out, _ := io.ReadAll(resp.Body)
+	fmt.Println(string(out))
+}
+```
+
+</CodeGroup>
 
 The response includes a `secret`. Store it when you create the endpoint. The secret is shown only on create and rotate responses.
 
@@ -88,11 +155,60 @@ Each delivery includes:
 
 The test endpoint sends a signed sample `whatsapp.message.received` payload directly to the saved endpoint URL. Use it to confirm your receiver, signature verification, and logs before waiting for live WhatsApp traffic.
 
-```bash
+<CodeGroup dropdown>
+
+```bash cURL
 curl -X POST \
   -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
   "$WHATSAPP_USE_BASE_URL/v1/webhooks/endpoints/we_123/test"
 ```
+
+```python Python
+import os
+import requests
+
+res = requests.post(
+    f"{os.environ['WHATSAPP_USE_BASE_URL']}/v1/webhooks/endpoints/we_123/test",
+    headers={"Authorization": f"Bearer {os.environ['WHATSAPP_USE_API_KEY']}"},
+)
+res.raise_for_status()
+print(res.json())
+```
+
+```javascript JavaScript
+const res = await fetch(`${process.env.WHATSAPP_USE_BASE_URL}/v1/webhooks/endpoints/we_123/test`, {
+  method: "POST",
+  headers: { Authorization: `Bearer ${process.env.WHATSAPP_USE_API_KEY}` },
+});
+
+console.log(await res.json());
+```
+
+```go Go
+package main
+
+import (
+	"fmt"
+	"io"
+	"net/http"
+	"os"
+)
+
+func main() {
+	req, _ := http.NewRequest("POST", os.Getenv("WHATSAPP_USE_BASE_URL")+"/v1/webhooks/endpoints/we_123/test", nil)
+	req.Header.Set("Authorization", "Bearer "+os.Getenv("WHATSAPP_USE_API_KEY"))
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+	out, _ := io.ReadAll(resp.Body)
+	fmt.Println(string(out))
+}
+```
+
+</CodeGroup>
 
 ## Rotate a secret
 

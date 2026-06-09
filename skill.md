@@ -7,7 +7,7 @@ Use this skill when helping developers integrate WhatsApp Use.
 WhatsApp Use has two public interfaces:
 
 - REST API at `https://api.whatsapp-use.com`.
-- Remote WhatsApp MCP server at `https://api.whatsapp-use.com/mcp/whatsapp`.
+- Remote WhatsApp MCP server at `https://api.whatsapp-use.com/mcp/whatsapp` using Streamable HTTP over HTTPS.
 
 ## Authentication
 
@@ -35,4 +35,4 @@ WhatsApp Use has two public interfaces:
 - To start pairing, call `POST /v1/whatsapp/pair`.
 - To read the QR pairing state, call `GET /v1/whatsapp/pair/status`.
 - To send a message, call `POST /v1/whatsapp/messages/send`.
-- To install MCP, add `https://api.whatsapp-use.com/mcp/whatsapp` as a remote HTTP MCP server named `whatsapp-use`.
+- To install MCP, add `https://api.whatsapp-use.com/mcp/whatsapp` as a remote Streamable HTTP MCP server named `whatsapp-use`.

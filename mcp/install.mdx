@@ -66,7 +66,7 @@ If your client uses JSON configuration, the server entry usually looks like this
     Your MCP client opens a browser. Sign in, choose your organization, and authorize the client.
   </Step>
   <Step title="Pair WhatsApp first if needed">
-    If your organization has no connection, create an API key and pair WhatsApp from the platform dashboard before authorizing MCP.
+    If your organization has no connection, use the dashboard handoff to connect a WhatsApp account before authorizing MCP. You do not need to create a REST API key for MCP.
   </Step>
   <Step title="Use tools">
     After authorization, your MCP client can call WhatsApp tools for the selected connection.
@@ -77,4 +77,4 @@ If your client uses JSON configuration, the server entry usually looks like this
 
 The install command only adds the MCP server to your client. Pairing happens in the platform dashboard because it requires account access, organization selection, and a WhatsApp QR scan.
 
-If you already have a paired connection, OAuth can authorize the MCP client immediately. If you do not, create an API key, pair WhatsApp in the dashboard, then retry MCP authorization.
+If you already have a paired connection, OAuth can authorize the MCP client immediately. If you do not, connect and pair WhatsApp from the dashboard handoff, then return to the MCP authorization.

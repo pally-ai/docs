@@ -235,6 +235,8 @@ paths:
           $ref: "#/components/responses/CommandAccepted"
         "400":
           $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
   /v1/whatsapp/messages/edit:
     post:
       tags: [WhatsApp]
@@ -253,6 +255,8 @@ paths:
           $ref: "#/components/responses/CommandAccepted"
         "400":
           $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
   /v1/whatsapp/messages/delete:
     post:
       tags: [WhatsApp]
@@ -271,6 +275,8 @@ paths:
           $ref: "#/components/responses/CommandAccepted"
         "400":
           $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
   /v1/whatsapp/messages/read:
     post:
       tags: [WhatsApp]
@@ -289,6 +295,8 @@ paths:
           $ref: "#/components/responses/CommandAccepted"
         "400":
           $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
   /v1/whatsapp/conversations/{conversation_id}/read:
     post:
       tags: [WhatsApp]
@@ -312,6 +320,8 @@ paths:
           $ref: "#/components/responses/CommandAccepted"
         "400":
           $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
   /v1/whatsapp/groups:
     post:
       tags: [WhatsApp]
@@ -330,6 +340,8 @@ paths:
           $ref: "#/components/responses/CommandAccepted"
         "400":
           $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
   /v1/whatsapp/groups/{group_jid}/participants:
     post:
       tags: [WhatsApp]
@@ -353,6 +365,8 @@ paths:
           $ref: "#/components/responses/CommandAccepted"
         "400":
           $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
   /v1/whatsapp/unlink:
     post:
       tags: [WhatsApp]
@@ -363,6 +377,8 @@ paths:
       responses:
         "202":
           $ref: "#/components/responses/CommandAccepted"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
   /v1/whatsapp/media/{message_id}:
     get:
       tags: [WhatsApp]
@@ -383,6 +399,8 @@ paths:
               schema:
                 type: string
                 format: binary
+        "401":
+          $ref: "#/components/responses/Unauthorized"
         "404":
           $ref: "#/components/responses/NotFound"
   /v1/webhooks/endpoints:
@@ -402,6 +420,8 @@ paths:
                     type: array
                     items:
                       $ref: "#/components/schemas/WebhookEndpoint"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
     post:
       tags: [Webhooks]
       summary: Create a webhook endpoint
@@ -422,6 +442,10 @@ paths:
                 properties:
                   endpoint:
                     $ref: "#/components/schemas/WebhookEndpoint"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
   /v1/webhooks/endpoints/{endpoint_id}:
     patch:
       tags: [Webhooks]
@@ -449,6 +473,12 @@ paths:
                 properties:
                   endpoint:
                     $ref: "#/components/schemas/WebhookEndpoint"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
     delete:
       tags: [Webhooks]
       summary: Delete a webhook endpoint
@@ -469,6 +499,10 @@ paths:
                 properties:
                   endpoint:
                     $ref: "#/components/schemas/WebhookEndpoint"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
   /v1/webhooks/endpoints/{endpoint_id}/rotate-secret:
     post:
       tags: [Webhooks]
@@ -490,6 +524,10 @@ paths:
                 properties:
                   endpoint:
                     $ref: "#/components/schemas/WebhookEndpoint"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
   /v1/webhooks/endpoints/{endpoint_id}/test:
     post:
       tags: [Webhooks]
@@ -509,6 +547,10 @@ paths:
               schema:
                 type: object
                 additionalProperties: true
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
   /v1/webhooks/deliveries:
     get:
       tags: [Webhooks]
@@ -528,6 +570,8 @@ paths:
                     type: array
                     items:
                       $ref: "#/components/schemas/WebhookDelivery"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
 components:
   securitySchemes:
     bearerAuth:
@@ -857,6 +901,7 @@ components:
     WebhookEndpointRequest:
       type: object
       required: [url]
+      description: "Create requests must include either `all_accounts: true` or one or more `connection_ids`."
       properties:
         url:
           type: string
@@ -879,6 +924,14 @@ components:
               - whatsapp.connection.status_changed
               - whatsapp.command.completed
               - whatsapp.command.failed
+        all_accounts:
+          type: boolean
+          description: Receive events from every current and future connected WhatsApp account in the organization.
+        connection_ids:
+          type: array
+          description: Restrict deliveries to specific WhatsApp connection IDs.
+          items:
+            type: string
         enabled:
           type: boolean
     WebhookEndpoint:
@@ -887,6 +940,8 @@ components:
         id:
           type: string
         user_id:
+          type: string
+        organization_id:
           type: string
         url:
           type: string
@@ -907,6 +962,12 @@ components:
               - whatsapp.connection.status_changed
               - whatsapp.command.completed
               - whatsapp.command.failed
+        all_accounts:
+          type: boolean
+        connection_ids:
+          type: array
+          items:
+            type: string
         secret:
           type: string
         enabled:
@@ -915,6 +976,9 @@ components:
           type: string
           format: date-time
         updated_at:
+          type: string
+          format: date-time
+        deleted_at:
           type: string
           format: date-time
     WebhookDelivery:

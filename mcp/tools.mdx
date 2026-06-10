@@ -9,37 +9,37 @@ Read-only MCP grants expose status, pairing status, sync, messages, and media to
 
 ## Connection and pairing
 
-| Tool | Description |
-| --- | --- |
-| `whatsapp_status` | Get connection, pairing, and connector status. |
-| `whatsapp_request_pair` | Start WhatsApp pairing and return the pairing request result. |
-| `whatsapp_pair_status` | Read the current pairing status and QR payload. |
-| `whatsapp_unlink` | Unlink the paired WhatsApp device and clear local WhatsApp state. |
+| Tool | Required scope | Description |
+| --- | --- | --- |
+| `whatsapp_status` | `whatsapp:read` | Get connection, pairing, and connector status. |
+| `whatsapp_pair_status` | `whatsapp:read` | Read the current pairing status and QR payload. |
+| `whatsapp_request_pair` | `whatsapp:write` | Start WhatsApp pairing and return the pairing request result. |
+| `whatsapp_unlink` | `whatsapp:write` | Unlink the paired WhatsApp device and clear local WhatsApp state. |
 
 ## Sync and read
 
-| Tool | Required arguments | Description |
-| --- | --- | --- |
-| `whatsapp_sync` | None | Read changed conversations, contacts, and messages after a sync cursor. Optional `cursor` and `limit`. |
-| `whatsapp_list_messages` | `conversation_id` | List messages in a WhatsApp conversation. Optional `before_message_id` and `limit`. |
-| `whatsapp_download_media` | `message_id` | Download small media as base64 plus MIME metadata. Larger files should be streamed from `GET /v1/whatsapp/media/{message_id}`. |
+| Tool | Required scope | Required arguments | Description |
+| --- | --- | --- | --- |
+| `whatsapp_sync` | `whatsapp:read` | None | Read changed conversations, contacts, and messages after a sync cursor. Optional `cursor` and `limit`. |
+| `whatsapp_list_messages` | `whatsapp:read` | `conversation_id` | List messages in a WhatsApp conversation. Optional `before_message_id` and `limit`. |
+| `whatsapp_download_media` | `whatsapp:read` | `message_id` | Download small media as base64 plus MIME metadata. Larger files should be streamed from `GET /v1/whatsapp/media/{message_id}`. |
 
 ## Messages
 
-| Tool | Required arguments | Description |
-| --- | --- | --- |
-| `whatsapp_send_message` | `text` plus `conversation_id` or `contact_id` | Send a WhatsApp text message. |
-| `whatsapp_react_to_message` | `message_id` plus `conversation_id` or `to` | React to a message. Empty `emoji` clears the reaction. |
-| `whatsapp_edit_message` | `message_id`, `text`, plus `conversation_id` or `to` | Edit a sent message. |
-| `whatsapp_delete_message` | `message_id` plus `conversation_id` or `to` | Delete or revoke a sent message. |
-| `whatsapp_mark_read` | `message_ids` plus `conversation_id` or `to` | Mark messages as read. |
+| Tool | Required scope | Required arguments | Description |
+| --- | --- | --- | --- |
+| `whatsapp_send_message` | `whatsapp:write` | `text` plus `conversation_id` or `contact_id` | Send a WhatsApp text message. |
+| `whatsapp_react_to_message` | `whatsapp:write` | `message_id` plus `conversation_id` or `to` | React to a message. Empty `emoji` clears the reaction. |
+| `whatsapp_edit_message` | `whatsapp:write` | `message_id`, `text`, plus `conversation_id` or `to` | Edit a sent message. |
+| `whatsapp_delete_message` | `whatsapp:write` | `message_id` plus `conversation_id` or `to` | Delete or revoke a sent message. |
+| `whatsapp_mark_read` | `whatsapp:write` | `message_ids` plus `conversation_id` or `to` | Mark messages as read. |
 
 ## Groups
 
-| Tool | Required arguments | Description |
-| --- | --- | --- |
-| `whatsapp_create_group` | `name`, `participants` | Create a WhatsApp group. Optional `announce` and `locked`. |
-| `whatsapp_update_group_participants` | `group_jid`, `participants`, `action` | Add, remove, promote, or demote group participants. |
+| Tool | Required scope | Required arguments | Description |
+| --- | --- | --- | --- |
+| `whatsapp_create_group` | `whatsapp:write` | `name`, `participants` | Create a WhatsApp group. Optional `announce` and `locked`. |
+| `whatsapp_update_group_participants` | `whatsapp:write` | `group_jid`, `participants`, `action` | Add, remove, promote, or demote group participants. |
 
 ## Example tool request
 

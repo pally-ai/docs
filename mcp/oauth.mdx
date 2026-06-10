@@ -30,7 +30,7 @@ The authorization server metadata is available at:
     The client starts `GET /oauth/authorize` with PKCE and the target resource.
   </Step>
   <Step title="Sign in">
-    WhatsApp Use authenticates the user and selects an allowed organization connection.
+    WhatsApp Use authenticates the user, redirects to the dashboard authorization handoff, and asks the user to choose an organization connection.
   </Step>
   <Step title="Exchange code">
     The client exchanges the authorization code at `POST /oauth/token`.
@@ -49,6 +49,8 @@ Each grant binds:
 - Scopes.
 - Client ID and client name.
 - Connection ID.
+
+OAuth can provision the hidden runtime credential used by the selected connection. You do not need a visible REST API key for MCP, but the selected connection must be paired before authorization can complete.
 
 ## Scopes
 

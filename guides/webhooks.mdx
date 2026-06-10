@@ -23,7 +23,10 @@ Use `["*"]` to receive every event, or subscribe to specific event types.
 
 ## Create an endpoint
 
-Use an API key with `webhooks:manage`.
+Use an API key with `webhooks:manage`. Every endpoint declares which WhatsApp
+accounts it receives events for: pass `connection_ids` with specific connection
+ids, or `all_accounts: true` to receive events from every connected account,
+including accounts connected later. One of the two is required.
 
 <CodeGroup dropdown>
 
@@ -36,6 +39,7 @@ curl -X POST \
     "url": "https://example.com/webhooks/whatsapp-use",
     "description": "Production webhook",
     "event_types": ["*"],
+    "all_accounts": true,
     "enabled": true
   }'
 ```
@@ -51,6 +55,7 @@ const res = await fetch(`${process.env.WHATSAPP_USE_BASE_URL}/v1/webhooks/endpoi
     url: "https://example.com/webhooks/whatsapp-use",
     description: "Production webhook",
     event_types: ["*"],
+    all_accounts: true,
     enabled: true,
   }),
 });
@@ -69,6 +74,7 @@ res = requests.post(
         "url": "https://example.com/webhooks/whatsapp-use",
         "description": "Production webhook",
         "event_types": ["*"],
+        "all_accounts": True,
         "enabled": True,
     },
 )
@@ -88,7 +94,7 @@ import (
 )
 
 func main() {
-	body := []byte(`{"url":"https://example.com/webhooks/whatsapp-use","description":"Production webhook","event_types":["*"],"enabled":true}`)
+	body := []byte(`{"url":"https://example.com/webhooks/whatsapp-use","description":"Production webhook","event_types":["*"],"all_accounts":true,"enabled":true}`)
 	req, _ := http.NewRequest("POST", os.Getenv("WHATSAPP_USE_BASE_URL")+"/v1/webhooks/endpoints", bytes.NewReader(body))
 	req.Header.Set("Authorization", "Bearer "+os.Getenv("WHATSAPP_USE_API_KEY"))
 	req.Header.Set("Content-Type", "application/json")
@@ -106,6 +112,9 @@ func main() {
 </CodeGroup>
 
 The response includes a `secret`. Store it when you create the endpoint. The secret is shown only on create and rotate responses.
+
+Every delivered event includes a top-level `connection_id` identifying the
+WhatsApp account it came from.
 
 ## Delivery format
 

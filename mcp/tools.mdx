@@ -7,6 +7,8 @@ The WhatsApp MCP server exposes a compact set of agent-facing tools. Older low-l
 
 Every MCP grant includes `mcp:whatsapp` for the selected connection. Read grants add `whatsapp:read` for inbox, message, contact, group, and media tools. Write grants add `whatsapp:write` for send, reaction, edit, delete, mark-read, group, and participant-update tools.
 
+Read tools return compact records by default: IDs, names, conversation titles, counts, timestamps, and short previews. Use opt-in fields such as `include_details`, `include_participants`, or `include_message_body` only when the task needs full participant lists or full message text.
+
 ## Golden path for agents
 
 Use these tools first:
@@ -36,22 +38,22 @@ WhatsApp pairing and account management happen in the dashboard, not through nor
 | Tool | Required scope | Required arguments | Description |
 | --- | --- | --- | --- |
 | `whatsapp_inbox_overview` | `whatsapp:read` | None | First triage tool for unread counts, actionable chats, unread mentions, sync state, and recommended follow-ups. |
-| `whatsapp_resolve_conversation` | `whatsapp:read` | `query` | Resolve a name, phone number, group title, chat name, contact, or JID into ranked conversation/contact targets, including contact-only targets that do not have an existing conversation yet, such as `Pally Test`. |
+| `whatsapp_resolve_conversation` | `whatsapp:read` | `query` | Resolve a name, phone number, group title, chat name, contact, or JID into ranked compact conversation/contact targets, including contact-only targets that do not have an existing conversation yet, such as `Pally Test`. |
 | `whatsapp_query` | `whatsapp:read` | `entity` | Canonical read-only query tool for counts, rankings, contact lookup, retained message search, and exploratory questions over synced state. Compact by default. It is not SQL. |
-| `whatsapp_list_conversations` | `whatsapp:read` | None | Canonical list/filter tool for browsing conversations by unread, archived, direct/group, mute, search, and sort state. |
-| `whatsapp_get_conversation` | `whatsapp:read` | `conversation_id` or `chat_jid` | Get one conversation with participants, unread state, latest message, and available actions. |
+| `whatsapp_list_conversations` | `whatsapp:read` | None | Canonical list/filter tool for browsing compact conversations by unread, archived, direct/group, mute, search, and sort state. |
+| `whatsapp_get_conversation` | `whatsapp:read` | `conversation_id` or `chat_jid` | Get one compact conversation with unread state and latest-message preview. Use `include_participants` or `include_details` only when needed. |
 
 ## Messages and context
 
 | Tool | Required scope | Required arguments | Description |
 | --- | --- | --- | --- |
-| `whatsapp_list_messages` | `whatsapp:read` | `conversation_id` | List messages in a known conversation. Use `whatsapp_resolve_conversation` first for named chats. |
-| `whatsapp_search_messages` | `whatsapp:read` | `query` | Search message contents by text, sender, conversation, and time range. |
-| `whatsapp_get_thread_context` | `whatsapp:read` | `message_id` or `wa_message_id` | Canonical context tool for a specific message. Includes nearby messages and reply-chain context. |
+| `whatsapp_list_messages` | `whatsapp:read` | `conversation_id` | List compact message previews in a known conversation. Use `whatsapp_resolve_conversation` first for named chats. |
+| `whatsapp_search_messages` | `whatsapp:read` | `query` | Search message contents by text, sender, conversation, and time range. Returns compact hits by default. |
+| `whatsapp_get_thread_context` | `whatsapp:read` | `message_id` or `wa_message_id` | Canonical context tool for a specific message. Includes compact nearby messages and reply-chain context. |
 | `whatsapp_list_mentions` | `whatsapp:read` | None | List messages that mention the paired user, or a specific mentioned JID. |
-| `whatsapp_list_shared_items` | `whatsapp:read` | None | List files, images, locations, contact cards, polls, events, calls, and pinned/kept-message events. |
-| `whatsapp_list_important_messages` | `whatsapp:read` | None | List starred, pinned-in-chat, and kept-in-chat messages. |
-| `whatsapp_get_group_info` | `whatsapp:read` | `conversation_id` or `chat_jid` | Get group metadata, participants, unread state, and available group actions. |
+| `whatsapp_list_shared_items` | `whatsapp:read` | None | List compact files, images, locations, contact cards, polls, events, calls, and pinned/kept-message events. |
+| `whatsapp_list_important_messages` | `whatsapp:read` | None | List compact starred, pinned-in-chat, and kept-in-chat messages. |
+| `whatsapp_get_group_info` | `whatsapp:read` | `conversation_id` or `chat_jid` | Get compact group metadata. Use `include_participants` or `include_details` only when needed. |
 | `whatsapp_download_media` | `whatsapp:read` | `message_id` | Download small media as base64 plus MIME metadata. Larger files should be streamed from `GET /v1/whatsapp/media/{message_id}`. |
 
 ## Open-ended read-only queries

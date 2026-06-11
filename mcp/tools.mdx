@@ -38,6 +38,7 @@ Use write tools only when the user clearly asks for the action.
 | --- | --- | --- | --- |
 | `whatsapp_inbox_overview` | `whatsapp:read` | None | First triage tool for unread counts, actionable chats, unread mentions, sync state, and recommended follow-ups. |
 | `whatsapp_resolve_conversation` | `whatsapp:read` | `query` | Resolve a name, phone number, group title, chat name, contact, or JID into ranked conversation/contact targets, including contact-only targets that do not have an existing conversation yet, such as `Pally Test`. |
+| `whatsapp_query` | `whatsapp:read` | `entity` | Canonical read-only query tool for open-ended questions over synced WhatsApp state. Use it for questions like "How many groups am I in?", "What groups is Haz in with me?", contact lookups, and retained message searches. It is not SQL. |
 | `whatsapp_list_conversations` | `whatsapp:read` | None | Canonical list/filter tool for browsing conversations by unread, archived, direct/group, mute, search, and sort state. |
 | `whatsapp_get_conversation` | `whatsapp:read` | `conversation_id` or `chat_jid` | Get one conversation with participants, unread state, latest message, and available actions. |
 | `whatsapp_list_actionable_chats` | `whatsapp:read` | None | Detailed actionable chat list. Prefer `whatsapp_inbox_overview` as the first triage call. |
@@ -62,6 +63,30 @@ Use write tools only when the user clearly asks for the action.
 | `whatsapp_download_media` | `whatsapp:read` | `message_id` | Download small media as base64 plus MIME metadata. Larger files should be streamed from `GET /v1/whatsapp/media/{message_id}`. |
 | `whatsapp_sync` | `whatsapp:read` | None | Low-level incremental replication feed. Use for sync/integration workflows, not normal chat triage. |
 | `whatsapp_sync_status` | `whatsapp:read` | None | Read sync readiness and cursor state. |
+
+## Open-ended read-only queries
+
+Use `whatsapp_query` when the user asks analytical or exploratory questions over synced WhatsApp state and there is no single named chat target yet.
+
+Examples:
+
+```json
+{ "entity": "conversations", "kind": "group", "aggregate": "count" }
+```
+
+```json
+{ "entity": "conversations", "kind": "group", "participant_query": "Haz" }
+```
+
+```json
+{ "entity": "contacts", "query": "Haz", "named_only": true }
+```
+
+```json
+{ "entity": "messages", "query": "invoice", "from": "Haz" }
+```
+
+Use `whatsapp_resolve_conversation` instead when the agent needs a target for reading, sending, or media actions.
 
 ## Messages
 

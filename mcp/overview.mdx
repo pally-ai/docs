@@ -46,5 +46,5 @@ The server returns MCP instructions during initialization and tool descriptions 
 For best results, add the same rule to your MCP client or project instructions:
 
 ```text
-Use whatsapp_get_started first if setup, pairing, scopes, or sync readiness are unclear. Use whatsapp_inbox_overview first for inbox triage. Use whatsapp_resolve_conversation before reading, sending, or sending media when the user names a person, phone number, group, or chat. Prefer whatsapp_send_image for images. Never call write tools unless the user clearly asks for that action.
+Use whatsapp_get_started first if setup, pairing, scopes, or sync readiness are unclear. Use whatsapp_inbox_overview first for inbox triage. Use whatsapp_resolve_conversation before reading, sending, or sending media when the user names a person, phone number, group, or chat. Use whatsapp_query for open-ended read-only questions over synced state, such as "How many groups am I in?" or "What groups is Haz in with me?"; it is not SQL. Prefer whatsapp_send_image for images. Never call write tools unless the user clearly asks for that action.
 ```

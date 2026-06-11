@@ -15,12 +15,14 @@ The MCP server uses Streamable HTTP over HTTPS and OAuth. It does not accept RES
 
 The WhatsApp MCP server can:
 
-- Read connection and pairing status.
+- Read setup, scope, pairing, connection, and sync readiness with `whatsapp_get_started`.
+- Triage unread chats, mentions, and actionable conversations with `whatsapp_inbox_overview`.
+- Resolve names, phone numbers, groups, chat titles, contacts, and JIDs with `whatsapp_resolve_conversation`, including contact-only matches with no existing conversation yet.
 - Start pairing and read QR state.
 - Sync conversations, contacts, and messages.
 - List messages in a conversation.
 - Download small media for a message on demand; use REST media streaming for larger files.
-- Send, react to, edit, delete, and mark messages as read.
+- Send text and images, react to, edit, delete, and mark messages as read.
 - Create groups and update group participants.
 - Unlink the paired WhatsApp device.
 
@@ -36,3 +38,13 @@ MCP uses the same connection model as the REST API:
 <Info>
   MCP OAuth grants a client access to one organization connection. Pair WhatsApp from the platform dashboard before authorizing MCP.
 </Info>
+
+## Agent guidance
+
+The server returns MCP instructions during initialization and tool descriptions during `tools/list`.
+
+For best results, add the same rule to your MCP client or project instructions:
+
+```text
+Use whatsapp_get_started first if setup, pairing, scopes, or sync readiness are unclear. Use whatsapp_inbox_overview first for inbox triage. Use whatsapp_resolve_conversation before reading, sending, or sending media when the user names a person, phone number, group, or chat. Prefer whatsapp_send_image for images. Never call write tools unless the user clearly asks for that action.
+```

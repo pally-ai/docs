@@ -7,32 +7,75 @@ The WhatsApp MCP server exposes these tools.
 
 Read-only MCP grants expose status, pairing status, sync, messages, and media tools. Grants with `whatsapp:write` also expose pairing, send, reaction, edit, delete, mark-read, group, participant-update, and unlink tools.
 
+## Golden path for agents
+
+Use these tools first:
+
+| User intent | Start with | Then use |
+| --- | --- | --- |
+| Check setup, pairing, scopes, or sync readiness | `whatsapp_get_started` | Follow `recommended_next_tools`. |
+| Triage unread chats or answer "what needs my attention?" | `whatsapp_inbox_overview` | `whatsapp_get_thread_context`, `whatsapp_list_messages`, or `whatsapp_mark_conversation_read`. |
+| The user names a person, phone number, group, or chat | `whatsapp_resolve_conversation` | `whatsapp_get_conversation`, `whatsapp_list_messages`, `whatsapp_send_message`, or `whatsapp_send_image`. |
+| Understand a specific message | `whatsapp_get_thread_context` | `whatsapp_reply_to_message`, `whatsapp_react_to_message`, or `whatsapp_mark_read` if the user asks. |
+| Send an image | `whatsapp_resolve_conversation` | `whatsapp_send_image` with the resolved `conversation_id` or `contact_id`. |
+| Search message text | `whatsapp_search_messages` | `whatsapp_get_thread_context` for any matching message that needs context. |
+
+Use write tools only when the user clearly asks for the action.
+
 ## Connection and pairing
 
 | Tool | Required scope | Description |
 | --- | --- | --- |
-| `whatsapp_status` | `whatsapp:read` | Get connection, pairing, and connector status. |
+| `whatsapp_get_started` | `mcp:whatsapp` | First-call tool for setup, pairing, scope, and sync readiness. Returns recommended next tools. |
+| `whatsapp_status` | `mcp:whatsapp` | Low-level connection, pairing, and connector status. Prefer `whatsapp_get_started` when state is unclear. |
 | `whatsapp_pair_status` | `whatsapp:read` | Read the current pairing status and QR payload. |
 | `whatsapp_request_pair` | `whatsapp:write` | Start WhatsApp pairing and return the pairing request result. |
 | `whatsapp_unlink` | `whatsapp:write` | Unlink the paired WhatsApp device and clear local WhatsApp state. |
 
-## Sync and read
+## Inbox and conversation discovery
 
 | Tool | Required scope | Required arguments | Description |
 | --- | --- | --- | --- |
-| `whatsapp_sync` | `whatsapp:read` | None | Read changed conversations, contacts, and messages after a sync cursor. Optional `cursor` and `limit`. |
-| `whatsapp_list_messages` | `whatsapp:read` | `conversation_id` | List messages in a WhatsApp conversation. Optional `before_message_id` and `limit`. |
+| `whatsapp_inbox_overview` | `whatsapp:read` | None | First triage tool for unread counts, actionable chats, unread mentions, sync state, and recommended follow-ups. |
+| `whatsapp_resolve_conversation` | `whatsapp:read` | `query` | Resolve a name, phone number, group title, chat name, contact, or JID into ranked conversation/contact targets, including contact-only targets that do not have an existing conversation yet, such as `Pally Test`. |
+| `whatsapp_list_conversations` | `whatsapp:read` | None | Canonical list/filter tool for browsing conversations by unread, archived, direct/group, mute, search, and sort state. |
+| `whatsapp_get_conversation` | `whatsapp:read` | `conversation_id` or `chat_jid` | Get one conversation with participants, unread state, latest message, and available actions. |
+| `whatsapp_list_actionable_chats` | `whatsapp:read` | None | Detailed actionable chat list. Prefer `whatsapp_inbox_overview` as the first triage call. |
+| `whatsapp_list_unread_messages` | `whatsapp:read` | None | List unread messages, optionally scoped to one conversation. |
+| `whatsapp_unread_summary` | `whatsapp:read` | None | Compact unread counts. Prefer `whatsapp_inbox_overview` for broad triage. |
+| `whatsapp_list_chats` | `whatsapp:read` | None | Low-level chat list. Prefer `whatsapp_list_conversations` for normal browsing. |
+| `whatsapp_list_unread_chats` | `whatsapp:read` | None | Secondary unread chat list. Prefer `whatsapp_inbox_overview` for triage. |
+
+## Messages and context
+
+| Tool | Required scope | Required arguments | Description |
+| --- | --- | --- | --- |
+| `whatsapp_list_messages` | `whatsapp:read` | `conversation_id` | List messages in a known conversation. Use `whatsapp_resolve_conversation` first for named chats. |
+| `whatsapp_search_messages` | `whatsapp:read` | `query` | Search message contents by text, sender, conversation, and time range. |
+| `whatsapp_get_thread_context` | `whatsapp:read` | `message_id` or `wa_message_id` | Canonical context tool for a specific message. Includes nearby messages and reply-chain context. |
+| `whatsapp_get_message` | `whatsapp:read` | `message_id` or `wa_message_id` | Low-level message lookup. Prefer `whatsapp_get_thread_context` for understanding. |
+| `whatsapp_list_mentions` | `whatsapp:read` | None | List messages that mention the paired user, or a specific mentioned JID. |
+| `whatsapp_list_contacts` | `whatsapp:read` | None | Browse contacts. Prefer `whatsapp_resolve_conversation` when choosing a target chat. |
+| `whatsapp_list_shared_items` | `whatsapp:read` | None | List files, images, locations, contact cards, polls, events, calls, and pinned/kept-message events. |
+| `whatsapp_list_important_messages` | `whatsapp:read` | None | List starred, pinned-in-chat, and kept-in-chat messages. |
+| `whatsapp_get_group_info` | `whatsapp:read` | `conversation_id` or `chat_jid` | Get group metadata, participants, unread state, and available group actions. |
 | `whatsapp_download_media` | `whatsapp:read` | `message_id` | Download small media as base64 plus MIME metadata. Larger files should be streamed from `GET /v1/whatsapp/media/{message_id}`. |
+| `whatsapp_sync` | `whatsapp:read` | None | Low-level incremental replication feed. Use for sync/integration workflows, not normal chat triage. |
+| `whatsapp_sync_status` | `whatsapp:read` | None | Read sync readiness and cursor state. |
 
 ## Messages
 
 | Tool | Required scope | Required arguments | Description |
 | --- | --- | --- | --- |
-| `whatsapp_send_message` | `whatsapp:write` | `text` plus `conversation_id` or `contact_id` | Send a WhatsApp text message. |
+| `whatsapp_send_message` | `whatsapp:write` | `text` plus `conversation_id` or `contact_id` | Send a WhatsApp text message. Resolve ambiguous recipients first with `whatsapp_resolve_conversation`. |
+| `whatsapp_reply_to_message` | `whatsapp:write` | `message_id`, `text`, plus `conversation_id` or `to` | Reply to a specific WhatsApp message. |
+| `whatsapp_send_image` | `whatsapp:write` | `image_base64`, `mime_type`, plus `conversation_id`, `contact_id`, or `to` | Send a WhatsApp image with an optional caption. Prefer this over `whatsapp_send_media` for images. |
+| `whatsapp_send_media` | `whatsapp:write` | `media_base64`, `mime_type`, plus `conversation_id`, `contact_id`, or `to` | Advanced generic media send. Prefer `whatsapp_send_image` for images. |
 | `whatsapp_react_to_message` | `whatsapp:write` | `message_id` plus `conversation_id` or `to` | React to a message. Empty `emoji` clears the reaction. |
 | `whatsapp_edit_message` | `whatsapp:write` | `message_id`, `text`, plus `conversation_id` or `to` | Edit a sent message. |
 | `whatsapp_delete_message` | `whatsapp:write` | `message_id` plus `conversation_id` or `to` | Delete or revoke a sent message. |
-| `whatsapp_mark_read` | `whatsapp:write` | `message_ids` plus `conversation_id` or `to` | Mark messages as read. |
+| `whatsapp_mark_read` | `whatsapp:write` | `message_ids` plus `conversation_id` or `to` | Mark specific messages as read. |
+| `whatsapp_mark_conversation_read` | `whatsapp:write` | `conversation_id` or `chat_jid` | Mark all unread messages in a conversation as read. |
 
 ## Groups
 

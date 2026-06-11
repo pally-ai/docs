@@ -1,145 +1,47 @@
 ---
 title: "Pair WhatsApp"
-description: "Start pairing, render the QR code, and monitor connection status."
+description: "Start pairing, render the QR code, and confirm connection status."
 ---
 
-Pairing connects one WhatsApp account to one WhatsApp Use connection.
+Pairing connects one WhatsApp account to one WhatsApp Use connection. The account owner must scan the QR code from WhatsApp on their phone.
 
 ## Recommended flow
 
 <Steps>
   <Step title="Create or select a connection">
-    In the dashboard, create a WhatsApp connection for the organization. If you use the API, make sure your API key is allowed to use the target connection.
+    In the dashboard, create a WhatsApp connection for the organization. If you use the API, make sure your API key can access the target connection.
   </Step>
-  <Step title="Request a pairing QR">
+  <Step title="Start pairing">
     Call `POST /v1/whatsapp/pair` with an API key that has `whatsapp:write`.
   </Step>
   <Step title="Render the QR code">
-    Poll `GET /v1/whatsapp/pair/status` and render the returned `qr` value as a QR code.
+    Poll `GET /v1/whatsapp/pair/status` and render the returned `qr` value.
   </Step>
-  <Step title="Scan with WhatsApp">
-    On the phone, open WhatsApp linked devices and scan the QR code.
-  </Step>
-  <Step title="Confirm status">
+  <Step title="Confirm the connection">
     Call `GET /v1/whatsapp/status` until `paired` is `true`.
   </Step>
 </Steps>
 
-<CodeGroup dropdown>
+## Start pairing
 
-```bash cURL
+```bash
 curl -X POST \
   -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
   "$WHATSAPP_USE_BASE_URL/v1/whatsapp/pair"
 ```
 
-```python Python
-import os
-import requests
+## Poll pairing status
 
-res = requests.post(
-    f"{os.environ['WHATSAPP_USE_BASE_URL']}/v1/whatsapp/pair",
-    headers={"Authorization": f"Bearer {os.environ['WHATSAPP_USE_API_KEY']}"},
-)
-res.raise_for_status()
-print(res.json())
-```
-
-```javascript JavaScript
-const res = await fetch(`${process.env.WHATSAPP_USE_BASE_URL}/v1/whatsapp/pair`, {
-  method: "POST",
-  headers: { Authorization: `Bearer ${process.env.WHATSAPP_USE_API_KEY}` },
-});
-
-console.log(await res.json());
-```
-
-```go Go
-package main
-
-import (
-	"fmt"
-	"io"
-	"net/http"
-	"os"
-)
-
-func main() {
-	req, _ := http.NewRequest("POST", os.Getenv("WHATSAPP_USE_BASE_URL")+"/v1/whatsapp/pair", nil)
-	req.Header.Set("Authorization", "Bearer "+os.Getenv("WHATSAPP_USE_API_KEY"))
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		panic(err)
-	}
-	defer resp.Body.Close()
-	out, _ := io.ReadAll(resp.Body)
-	fmt.Println(string(out))
-}
-```
-
-</CodeGroup>
-
-<CodeGroup dropdown>
-
-```bash cURL
+```bash
 curl -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
   "$WHATSAPP_USE_BASE_URL/v1/whatsapp/pair/status"
 ```
 
-```python Python
-import os
-import requests
-
-res = requests.get(
-    f"{os.environ['WHATSAPP_USE_BASE_URL']}/v1/whatsapp/pair/status",
-    headers={"Authorization": f"Bearer {os.environ['WHATSAPP_USE_API_KEY']}"},
-)
-res.raise_for_status()
-print(res.json())
-```
-
-```javascript JavaScript
-const res = await fetch(`${process.env.WHATSAPP_USE_BASE_URL}/v1/whatsapp/pair/status`, {
-  headers: { Authorization: `Bearer ${process.env.WHATSAPP_USE_API_KEY}` },
-});
-
-console.log(await res.json());
-```
-
-```go Go
-package main
-
-import (
-	"fmt"
-	"io"
-	"net/http"
-	"os"
-)
-
-func main() {
-	req, _ := http.NewRequest("GET", os.Getenv("WHATSAPP_USE_BASE_URL")+"/v1/whatsapp/pair/status", nil)
-	req.Header.Set("Authorization", "Bearer "+os.Getenv("WHATSAPP_USE_API_KEY"))
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		panic(err)
-	}
-	defer resp.Body.Close()
-	out, _ := io.ReadAll(resp.Body)
-	fmt.Println(string(out))
-}
-```
-
-</CodeGroup>
-
-## Pairing state
-
-The pairing status response contains:
+The pairing status response includes:
 
 | Field | Meaning |
 | --- | --- |
-| `status` | Pairing state such as `qr`, `paired`, or `failed`. |
+| `status` | Pairing state, such as `qr`, `paired`, or `failed`. |
 | `qr` | QR payload to render when `status` is `qr`. |
 | `error` | Error text when pairing fails. |
 

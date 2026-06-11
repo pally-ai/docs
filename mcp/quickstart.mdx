@@ -1,0 +1,76 @@
+---
+title: "MCP quickstart"
+description: "Connect an AI client to WhatsApp Use through the hosted MCP server."
+---
+
+Use this guide when you want Claude, Codex, or another MCP client to use WhatsApp tools. MCP uses OAuth. You do not need to create or paste a REST API key.
+
+## Before you begin
+
+You need:
+
+- A WhatsApp Use account and organization.
+- A WhatsApp account available on your phone.
+- An MCP client that supports remote Streamable HTTP over HTTPS.
+
+## 1. Add the MCP server
+
+<Tabs>
+  <Tab title="Claude Code">
+    ```bash
+    claude mcp add --transport http whatsapp-use https://api.whatsapp-use.com/mcp/whatsapp
+    ```
+  </Tab>
+  <Tab title="Codex">
+    ```bash
+    codex mcp add whatsapp-use --url https://api.whatsapp-use.com/mcp/whatsapp
+    ```
+
+    If Codex asks you to authenticate later, run:
+
+    ```bash
+    codex mcp login whatsapp-use
+    ```
+  </Tab>
+</Tabs>
+
+## 2. Complete OAuth
+
+Your MCP client opens a browser. Sign in, choose your organization, and approve the WhatsApp Use MCP grant.
+
+If the organization has no paired WhatsApp connection yet, the authorization flow sends you to the dashboard to pair one.
+
+## 3. Start with the setup tool
+
+Ask your agent to call:
+
+```text
+whatsapp_get_started
+```
+
+This returns pairing, connection, scope, and sync readiness. It also recommends the next tool.
+
+## 4. Use the canonical tools
+
+| User intent | First tool |
+| --- | --- |
+| Check setup or auth state | `whatsapp_get_started` |
+| See what needs attention | `whatsapp_inbox_overview` |
+| Find a person, group, phone number, or chat | `whatsapp_resolve_conversation` |
+| Ask an open-ended read-only question | `whatsapp_query` |
+| Send an image | `whatsapp_resolve_conversation`, then `whatsapp_send_image` |
+
+<Warning>
+  Agents should only call write tools when the user clearly asks to send, edit, delete, mark read, create a group, update group participants, or unlink WhatsApp.
+</Warning>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Install MCP" icon="terminal" href="/mcp/install">
+    See client commands and generic remote MCP configuration.
+  </Card>
+  <Card title="MCP tools" icon="list-checks" href="/mcp/tools">
+    Choose the right tool for each WhatsApp task.
+  </Card>
+</CardGroup>

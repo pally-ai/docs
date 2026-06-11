@@ -1,11 +1,9 @@
 ---
-title: "Quickstart"
-description: "Create an API key, pair WhatsApp, and send your first message."
+title: "API quickstart"
+description: "Create an API key, pair WhatsApp, and send your first REST API message."
 ---
 
-This guide uses the REST API. Use the dashboard to create the API key, because the key secret is only shown once.
-
-Examples use plain HTTP clients. No SDK is required.
+Use this guide when you are calling WhatsApp Use from your own code. For AI clients, use the [MCP quickstart](/mcp/quickstart).
 
 ## Before you begin
 
@@ -13,248 +11,55 @@ You need:
 
 - A WhatsApp Use account and organization.
 - A WhatsApp account available on your phone.
-- An API key with `whatsapp:read` and `whatsapp:write` scopes.
+- An API key with `whatsapp:read` and `whatsapp:write`.
 
-## 1. Set environment variables
+## 1. Set your API key
 
 ```bash
 export WHATSAPP_USE_BASE_URL="https://api.whatsapp-use.com"
-export WHATSAPP_USE_API_KEY="pa_test_..."
+export WHATSAPP_USE_API_KEY="pa_live_..."
 ```
 
-## 2. Inspect your key
+## 2. Check the key
 
-<CodeGroup dropdown>
-
-```bash cURL
+```bash
 curl -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
   "$WHATSAPP_USE_BASE_URL/v1/me"
 ```
 
-```javascript JavaScript
-const res = await fetch(`${process.env.WHATSAPP_USE_BASE_URL}/v1/me`, {
-  headers: { Authorization: `Bearer ${process.env.WHATSAPP_USE_API_KEY}` },
-});
+The response includes your organization, scopes, connection access, and public endpoint paths.
 
-console.log(await res.json());
-```
+## 3. Pair WhatsApp
 
-```python Python
-import os
-import requests
+Start pairing:
 
-res = requests.get(
-    f"{os.environ['WHATSAPP_USE_BASE_URL']}/v1/me",
-    headers={"Authorization": f"Bearer {os.environ['WHATSAPP_USE_API_KEY']}"},
-)
-res.raise_for_status()
-print(res.json())
-```
-
-```go Go
-package main
-
-import (
-	"fmt"
-	"io"
-	"net/http"
-	"os"
-)
-
-func main() {
-	req, _ := http.NewRequest("GET", os.Getenv("WHATSAPP_USE_BASE_URL")+"/v1/me", nil)
-	req.Header.Set("Authorization", "Bearer "+os.Getenv("WHATSAPP_USE_API_KEY"))
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		panic(err)
-	}
-	defer resp.Body.Close()
-	body, _ := io.ReadAll(resp.Body)
-	fmt.Println(string(body))
-}
-```
-
-</CodeGroup>
-
-The response includes your organization, key metadata, and public endpoint paths.
-
-## 3. Start WhatsApp pairing
-
-<CodeGroup dropdown>
-
-```bash cURL
+```bash
 curl -X POST \
   -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
   "$WHATSAPP_USE_BASE_URL/v1/whatsapp/pair"
 ```
 
-```javascript JavaScript
-const res = await fetch(`${process.env.WHATSAPP_USE_BASE_URL}/v1/whatsapp/pair`, {
-  method: "POST",
-  headers: { Authorization: `Bearer ${process.env.WHATSAPP_USE_API_KEY}` },
-});
+Poll pairing state:
 
-console.log(await res.json());
-```
-
-```python Python
-import os
-import requests
-
-res = requests.post(
-    f"{os.environ['WHATSAPP_USE_BASE_URL']}/v1/whatsapp/pair",
-    headers={"Authorization": f"Bearer {os.environ['WHATSAPP_USE_API_KEY']}"},
-)
-res.raise_for_status()
-print(res.json())
-```
-
-```go Go
-package main
-
-import (
-	"fmt"
-	"io"
-	"net/http"
-	"os"
-)
-
-func main() {
-	req, _ := http.NewRequest("POST", os.Getenv("WHATSAPP_USE_BASE_URL")+"/v1/whatsapp/pair", nil)
-	req.Header.Set("Authorization", "Bearer "+os.Getenv("WHATSAPP_USE_API_KEY"))
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		panic(err)
-	}
-	defer resp.Body.Close()
-	body, _ := io.ReadAll(resp.Body)
-	fmt.Println(string(body))
-}
-```
-
-</CodeGroup>
-
-Then poll for the QR payload:
-
-<CodeGroup dropdown>
-
-```bash cURL
+```bash
 curl -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
   "$WHATSAPP_USE_BASE_URL/v1/whatsapp/pair/status"
 ```
 
-```python Python
-import os
-import requests
+Render the returned `qr` value in your UI, or pair from the WhatsApp Use dashboard.
 
-res = requests.get(
-    f"{os.environ['WHATSAPP_USE_BASE_URL']}/v1/whatsapp/pair/status",
-    headers={"Authorization": f"Bearer {os.environ['WHATSAPP_USE_API_KEY']}"},
-)
-res.raise_for_status()
-print(res.json())
-```
+## 4. Confirm connection status
 
-```javascript JavaScript
-const res = await fetch(`${process.env.WHATSAPP_USE_BASE_URL}/v1/whatsapp/pair/status`, {
-  headers: { Authorization: `Bearer ${process.env.WHATSAPP_USE_API_KEY}` },
-});
-
-console.log(await res.json());
-```
-
-```go Go
-package main
-
-import (
-	"fmt"
-	"io"
-	"net/http"
-	"os"
-)
-
-func main() {
-	req, _ := http.NewRequest("GET", os.Getenv("WHATSAPP_USE_BASE_URL")+"/v1/whatsapp/pair/status", nil)
-	req.Header.Set("Authorization", "Bearer "+os.Getenv("WHATSAPP_USE_API_KEY"))
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		panic(err)
-	}
-	defer resp.Body.Close()
-	out, _ := io.ReadAll(resp.Body)
-	fmt.Println(string(out))
-}
-```
-
-</CodeGroup>
-
-Render the returned QR value in your UI, or pair from the WhatsApp Use dashboard.
-
-## 4. Check connection status
-
-<CodeGroup dropdown>
-
-```bash cURL
+```bash
 curl -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
   "$WHATSAPP_USE_BASE_URL/v1/whatsapp/status"
 ```
 
-```python Python
-import os
-import requests
+When pairing succeeds, `paired` is `true`. When the hosted connection is active, `connected` is `true`.
 
-res = requests.get(
-    f"{os.environ['WHATSAPP_USE_BASE_URL']}/v1/whatsapp/status",
-    headers={"Authorization": f"Bearer {os.environ['WHATSAPP_USE_API_KEY']}"},
-)
-res.raise_for_status()
-print(res.json())
-```
+## 5. Send a text message
 
-```javascript JavaScript
-const res = await fetch(`${process.env.WHATSAPP_USE_BASE_URL}/v1/whatsapp/status`, {
-  headers: { Authorization: `Bearer ${process.env.WHATSAPP_USE_API_KEY}` },
-});
-
-console.log(await res.json());
-```
-
-```go Go
-package main
-
-import (
-	"fmt"
-	"io"
-	"net/http"
-	"os"
-)
-
-func main() {
-	req, _ := http.NewRequest("GET", os.Getenv("WHATSAPP_USE_BASE_URL")+"/v1/whatsapp/status", nil)
-	req.Header.Set("Authorization", "Bearer "+os.Getenv("WHATSAPP_USE_API_KEY"))
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		panic(err)
-	}
-	defer resp.Body.Close()
-	out, _ := io.ReadAll(resp.Body)
-	fmt.Println(string(out))
-}
-```
-
-</CodeGroup>
-
-When pairing succeeds, `paired` is `true`. `connected` is `true` when WhatsApp Use currently has an active WhatsApp connection.
-
-## 5. Send a message
-
-<CodeGroup dropdown>
-
-```bash cURL
+```bash
 curl -X POST \
   -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
   -H "Content-Type: application/json" \
@@ -265,76 +70,15 @@ curl -X POST \
   }'
 ```
 
-```javascript JavaScript
-const res = await fetch(`${process.env.WHATSAPP_USE_BASE_URL}/v1/whatsapp/messages/send`, {
-  method: "POST",
-  headers: {
-    Authorization: `Bearer ${process.env.WHATSAPP_USE_API_KEY}`,
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify({
-    contact_id: "14155550123@s.whatsapp.net",
-    text: "Hello from WhatsApp Use",
-  }),
-});
-
-console.log(await res.json());
-```
-
-```python Python
-import os
-import requests
-
-res = requests.post(
-    f"{os.environ['WHATSAPP_USE_BASE_URL']}/v1/whatsapp/messages/send",
-    headers={"Authorization": f"Bearer {os.environ['WHATSAPP_USE_API_KEY']}"},
-    json={
-        "contact_id": "14155550123@s.whatsapp.net",
-        "text": "Hello from WhatsApp Use",
-    },
-)
-res.raise_for_status()
-print(res.json())
-```
-
-```go Go
-package main
-
-import (
-	"bytes"
-	"fmt"
-	"io"
-	"net/http"
-	"os"
-)
-
-func main() {
-	body := []byte(`{"contact_id":"14155550123@s.whatsapp.net","text":"Hello from WhatsApp Use"}`)
-	req, _ := http.NewRequest("POST", os.Getenv("WHATSAPP_USE_BASE_URL")+"/v1/whatsapp/messages/send", bytes.NewReader(body))
-	req.Header.Set("Authorization", "Bearer "+os.Getenv("WHATSAPP_USE_API_KEY"))
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		panic(err)
-	}
-	defer resp.Body.Close()
-	out, _ := io.ReadAll(resp.Body)
-	fmt.Println(string(out))
-}
-```
-
-</CodeGroup>
-
-Use `conversation_id` instead of `contact_id` when replying to an existing conversation returned by `/v1/whatsapp/conversations` or `/v1/whatsapp/sync`.
+Use `conversation_id` instead of `contact_id` when sending into an existing conversation returned by `GET /v1/whatsapp/conversations` or `GET /v1/whatsapp/sync`.
 
 ## Next steps
 
 <CardGroup cols={2}>
-  <Card title="Pair WhatsApp" icon="qr-code" href="/guides/pair-whatsapp">
+  <Card title="Pairing guide" icon="qr-code" href="/guides/pair-whatsapp">
     Build a dashboard or CLI pairing flow.
   </Card>
-  <Card title="Use MCP" icon="bot" href="/mcp/install">
-    Connect an AI client to WhatsApp Use.
+  <Card title="Authentication and scopes" icon="key-round" href="/api/authentication">
+    Choose API key scopes and connection selection.
   </Card>
 </CardGroup>

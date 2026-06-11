@@ -1,36 +1,15 @@
 ---
-title: "Webhooks"
-description: "Receive WhatsApp events at your own endpoint."
+title: "Receive webhooks"
+description: "Create a webhook endpoint and verify signed WhatsApp events."
 ---
 
-Webhook endpoints let your application receive events from WhatsApp Use.
-
-## Events
-
-Use `["*"]` to receive every event, or subscribe to specific event types.
-
-| Event | When it fires |
-| --- | --- |
-| `whatsapp.message.received` | A connected WhatsApp account receives a new message. |
-| `whatsapp.message.sent` | WhatsApp Use sends a message through a connected account. |
-| `whatsapp.message.reaction_received` | Someone reacts to a stored WhatsApp message. |
-| `whatsapp.message.edited` | A stored WhatsApp message is edited. |
-| `whatsapp.message.deleted` | A stored WhatsApp message is revoked or deleted. |
-| `whatsapp.message.receipt_updated` | A message moves to delivered or read. |
-| `whatsapp.connection.status_changed` | Pairing, reconnect, disconnect, or setup state changes. |
-| `whatsapp.command.completed` | A runtime command finishes successfully. |
-| `whatsapp.command.failed` | A runtime command fails before completion. |
+Webhook endpoints send WhatsApp events to your application. Use an API key with `webhooks:manage`.
 
 ## Create an endpoint
 
-Use an API key with `webhooks:manage`. Every endpoint declares which WhatsApp
-accounts it receives events for: pass `connection_ids` with specific connection
-ids, or `all_accounts: true` to receive events from every connected account,
-including accounts connected later. One of the two is required.
+Subscribe to every event with `["*"]`, or pass specific event types.
 
-<CodeGroup dropdown>
-
-```bash cURL
+```bash
 curl -X POST \
   -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
   -H "Content-Type: application/json" \
@@ -44,105 +23,25 @@ curl -X POST \
   }'
 ```
 
-```javascript JavaScript
-const res = await fetch(`${process.env.WHATSAPP_USE_BASE_URL}/v1/webhooks/endpoints`, {
-  method: "POST",
-  headers: {
-    Authorization: `Bearer ${process.env.WHATSAPP_USE_API_KEY}`,
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify({
-    url: "https://example.com/webhooks/whatsapp-use",
-    description: "Production webhook",
-    event_types: ["*"],
-    all_accounts: true,
-    enabled: true,
-  }),
-});
-
-console.log(await res.json());
-```
-
-```python Python
-import os
-import requests
-
-res = requests.post(
-    f"{os.environ['WHATSAPP_USE_BASE_URL']}/v1/webhooks/endpoints",
-    headers={"Authorization": f"Bearer {os.environ['WHATSAPP_USE_API_KEY']}"},
-    json={
-        "url": "https://example.com/webhooks/whatsapp-use",
-        "description": "Production webhook",
-        "event_types": ["*"],
-        "all_accounts": True,
-        "enabled": True,
-    },
-)
-res.raise_for_status()
-print(res.json())
-```
-
-```go Go
-package main
-
-import (
-	"bytes"
-	"fmt"
-	"io"
-	"net/http"
-	"os"
-)
-
-func main() {
-	body := []byte(`{"url":"https://example.com/webhooks/whatsapp-use","description":"Production webhook","event_types":["*"],"all_accounts":true,"enabled":true}`)
-	req, _ := http.NewRequest("POST", os.Getenv("WHATSAPP_USE_BASE_URL")+"/v1/webhooks/endpoints", bytes.NewReader(body))
-	req.Header.Set("Authorization", "Bearer "+os.Getenv("WHATSAPP_USE_API_KEY"))
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		panic(err)
-	}
-	defer resp.Body.Close()
-	out, _ := io.ReadAll(resp.Body)
-	fmt.Println(string(out))
-}
-```
-
-</CodeGroup>
-
 The response includes a `secret`. Store it when you create the endpoint. The secret is shown only on create and rotate responses.
 
-Every delivered event includes a top-level `connection_id` identifying the
-WhatsApp account it came from.
+## Event shape
 
-## Delivery format
-
-Webhook requests use JSON:
+Each delivery is JSON and includes the event type, connection ID, payload, and occurrence time:
 
 ```json
 {
   "id": "evt_20260608093000",
   "type": "whatsapp.message.received",
-  "source": "runtime",
-  "user_id": "user_123",
-  "api_key_id": "key_...",
+  "connection_id": "conn_123",
   "payload": {
     "message": {
       "message_id": "msg_wa_inbound_01",
       "conversation_id": "conv_15555550123",
       "chat_jid": "15555550123@s.whatsapp.net",
-      "wa_message_id": "3EB0EXAMPLE",
-      "sender_jid": "15555550123@s.whatsapp.net",
-      "sender_person_id": "person_15555550123",
-      "sender_push_name": "Test Contact",
       "direction": "incoming",
-      "is_from_me": false,
       "content_type": "text",
-      "body": "Can you send the invoice?",
-      "status": "received",
-      "sent_at": "2026-06-08T09:29:58Z",
-      "received_at": "2026-06-08T09:30:00Z"
+      "body": "Can you send the invoice?"
     }
   },
   "occurred_at": "2026-06-08T09:30:00Z"
@@ -151,7 +50,7 @@ Webhook requests use JSON:
 
 ## Signature headers
 
-Each delivery includes:
+Verify the signature before processing a delivery.
 
 | Header | Description |
 | --- | --- |
@@ -162,69 +61,10 @@ Each delivery includes:
 
 ## Test an endpoint
 
-The test endpoint sends a signed sample `whatsapp.message.received` payload directly to the saved endpoint URL. Use it to confirm your receiver, signature verification, and logs before waiting for live WhatsApp traffic.
-
-<CodeGroup dropdown>
-
-```bash cURL
+```bash
 curl -X POST \
   -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
   "$WHATSAPP_USE_BASE_URL/v1/webhooks/endpoints/we_123/test"
 ```
 
-```python Python
-import os
-import requests
-
-res = requests.post(
-    f"{os.environ['WHATSAPP_USE_BASE_URL']}/v1/webhooks/endpoints/we_123/test",
-    headers={"Authorization": f"Bearer {os.environ['WHATSAPP_USE_API_KEY']}"},
-)
-res.raise_for_status()
-print(res.json())
-```
-
-```javascript JavaScript
-const res = await fetch(`${process.env.WHATSAPP_USE_BASE_URL}/v1/webhooks/endpoints/we_123/test`, {
-  method: "POST",
-  headers: { Authorization: `Bearer ${process.env.WHATSAPP_USE_API_KEY}` },
-});
-
-console.log(await res.json());
-```
-
-```go Go
-package main
-
-import (
-	"fmt"
-	"io"
-	"net/http"
-	"os"
-)
-
-func main() {
-	req, _ := http.NewRequest("POST", os.Getenv("WHATSAPP_USE_BASE_URL")+"/v1/webhooks/endpoints/we_123/test", nil)
-	req.Header.Set("Authorization", "Bearer "+os.Getenv("WHATSAPP_USE_API_KEY"))
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		panic(err)
-	}
-	defer resp.Body.Close()
-	out, _ := io.ReadAll(resp.Body)
-	fmt.Println(string(out))
-}
-```
-
-</CodeGroup>
-
-## Rotate a secret
-
-Rotate the signing secret if it is lost or exposed. The response includes the new `secret` once.
-
-```bash
-curl -X POST \
-  -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
-  "$WHATSAPP_USE_BASE_URL/v1/webhooks/endpoints/we_123/rotate-secret"
-```
+The test endpoint sends a signed sample `whatsapp.message.received` event to the saved URL.

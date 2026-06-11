@@ -1,50 +1,53 @@
 ---
 title: "MCP overview"
-description: "Use WhatsApp Use as a remote MCP server for AI clients."
+description: "Use WhatsApp Use as a hosted MCP server for AI clients."
 ---
 
-WhatsApp Use exposes one public remote MCP server:
+WhatsApp Use exposes one hosted MCP server:
 
 ```text
 https://api.whatsapp-use.com/mcp/whatsapp
 ```
 
-The MCP server uses Streamable HTTP over HTTPS and OAuth. It does not accept REST API keys.
-
-## Tools
-
-The WhatsApp MCP server can:
-
-- Read setup, scope, pairing, connection, and sync readiness with `whatsapp_get_started`.
-- Triage unread chats, mentions, and actionable conversations with `whatsapp_inbox_overview`.
-- Resolve names, phone numbers, groups, chat titles, contacts, and JIDs with `whatsapp_resolve_conversation`, including contact-only matches with no existing conversation yet.
-- Start pairing and read QR state.
-- Sync conversations, contacts, and messages.
-- List messages in a conversation.
-- Download small media for a message on demand; use REST media streaming for larger files.
-- Send text and images, react to, edit, delete, and mark messages as read.
-- Create groups and update group participants.
-- Unlink the paired WhatsApp device.
-
-## Relationship to REST
-
-MCP uses the same connection model as the REST API:
+Use MCP when an AI client needs WhatsApp tools. Use the REST API when you are writing application code.
 
 | Interface | Authentication | Best for |
 | --- | --- | --- |
-| REST API | Dashboard-created API key | Your app, backend jobs, integrations, webhook management. |
-| Remote MCP | OAuth | AI tools and MCP clients that need WhatsApp tools. |
+| Remote MCP | OAuth | AI clients such as Claude, Codex, and other MCP-capable agents. |
+| REST API | API key | App backends, jobs, internal tools, and webhook management. |
 
-<Info>
-  MCP OAuth grants a client access to one organization connection. Pair WhatsApp from the platform dashboard before authorizing MCP.
-</Info>
+## What the server can do
+
+- Check setup, pairing, scopes, and sync readiness.
+- Resolve people, phone numbers, groups, and chat titles.
+- Triage unread and actionable conversations.
+- Search retained conversations, contacts, and messages.
+- Read messages, mentions, shared items, and group info.
+- Send text and images when write access is granted.
+- React, edit, delete, mark read, create groups, update participants, and unlink when explicitly requested.
 
 ## Agent guidance
 
-The server returns MCP instructions during initialization and tool descriptions during `tools/list`.
+The server returns instructions during MCP initialization and tool descriptions during `tools/list`.
 
-For best results, add the same rule to your MCP client or project instructions:
+The default flow is:
 
-```text
-Use whatsapp_get_started first if setup, pairing, scopes, or sync readiness are unclear. Use whatsapp_inbox_overview first for inbox triage. Use whatsapp_resolve_conversation before reading, sending, or sending media when the user names a person, phone number, group, or chat. Use whatsapp_query for open-ended read-only questions over synced state, such as "How many groups am I in?" or "What groups is Haz in with me?"; it is not SQL. Prefer whatsapp_send_image for images. Never call write tools unless the user clearly asks for that action.
-```
+<Steps>
+  <Step title="Check readiness">
+    Call `whatsapp_get_started` when setup, pairing, scopes, or sync state is unclear.
+  </Step>
+  <Step title="Resolve the target">
+    Call `whatsapp_resolve_conversation` when the user names a person, phone number, group, or chat.
+  </Step>
+  <Step title="Use the task tool">
+    Read with list/context tools, answer open-ended read-only questions with `whatsapp_query`, and send images with `whatsapp_send_image`.
+  </Step>
+</Steps>
+
+<Warning>
+  Agents should not send, edit, delete, mark read, create groups, update participants, or unlink unless the user clearly asks for that action.
+</Warning>
+
+## Next step
+
+Start with the [MCP quickstart](/mcp/quickstart).

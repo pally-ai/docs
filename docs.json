@@ -50,15 +50,19 @@
         "icon": "book-open",
         "groups": [
           {
-            "group": "Get started",
+            "group": "Start here",
             "pages": [
               "index",
+              "guides/concepts"
+            ]
+          },
+          {
+            "group": "Common tasks",
+            "pages": [
               "quickstart",
-              "guides/concepts",
               "guides/pair-whatsapp",
               "guides/send-message",
-              "guides/webhooks",
-              "guides/ai-readable-docs"
+              "guides/webhooks"
             ]
           }
         ]
@@ -148,6 +152,7 @@
           {
             "group": "Remote MCP",
             "pages": [
+              "mcp/quickstart",
               "mcp/overview",
               "mcp/install",
               "mcp/oauth",

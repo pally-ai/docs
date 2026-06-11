@@ -1,38 +1,33 @@
 ---
 title: "Introduction"
-description: "Use WhatsApp from your applications and AI tools through a hosted API and remote MCP server."
+description: "Connect WhatsApp to agents and applications through hosted MCP and REST APIs."
 ---
 
-WhatsApp Use gives developers a managed way to connect a WhatsApp account to software. You create an organization, create a WhatsApp connection, pair it with a QR code, and then use REST API calls or a remote MCP server to read and act on WhatsApp data.
-
-The platform has two public interfaces:
+WhatsApp Use connects an existing WhatsApp account to your agent or application. Pair the account once, then use MCP or the REST API to read conversations, search recent history, receive events, and send messages when write access is enabled.
 
 <CardGroup cols={2}>
-  <Card title="REST API" icon="braces" href="/quickstart">
-    Use API keys to pair WhatsApp, send messages, read conversations, fetch media on demand, and manage webhooks.
+  <Card title="Use MCP with an agent" icon="bot" href="/mcp/quickstart">
+    Add the hosted MCP server to Claude, Codex, or another remote MCP client. OAuth grants access to one paired connection.
   </Card>
-  <Card title="Remote MCP" icon="bot" href="/mcp/overview">
-    Let AI clients use WhatsApp tools through OAuth and a connection-bound MCP grant.
+  <Card title="Use the REST API" icon="braces" href="/quickstart">
+    Create an API key, pair WhatsApp, and call the hosted API from your app, job, or internal tool.
   </Card>
 </CardGroup>
 
 ## How it works
 
 <Steps>
-  <Step title="Create an organization">
-    Sign in to the platform and choose or create an organization. API keys, WhatsApp connections, MCP grants, usage, and webhooks belong to the organization.
+  <Step title="Pair a WhatsApp account">
+    The account owner scans a QR code from the platform dashboard or a REST pairing flow.
   </Step>
-  <Step title="Create a WhatsApp connection">
-    A connection represents one paired WhatsApp account. An organization can have more than one connection.
+  <Step title="Choose MCP or REST">
+    Use MCP for AI clients. Use REST for application code, backend jobs, and webhooks.
   </Step>
-  <Step title="Pair WhatsApp">
-    Start pairing from the dashboard or API, then scan the QR code with the WhatsApp mobile app.
-  </Step>
-  <Step title="Use REST or MCP">
-    REST clients use API keys. MCP clients use OAuth and receive access to an already-owned connection.
+  <Step title="Control access">
+    API keys and MCP grants belong to an organization and use scopes for read, write, and webhook access.
   </Step>
 </Steps>
 
 <Info>
-  WhatsApp device pairing is separate from MCP OAuth. OAuth authorizes an AI client to use your existing connection. Pairing authorizes WhatsApp Use to connect to WhatsApp.
+  WhatsApp pairing and MCP OAuth are separate. Pairing connects WhatsApp Use to WhatsApp. OAuth authorizes an MCP client to use one paired connection.
 </Info>

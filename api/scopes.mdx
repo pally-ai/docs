@@ -9,8 +9,9 @@ MCP grants created from the dashboard are read-only by default. The dashboard wr
 
 | Scope | REST APIs | MCP resources |
 | --- | --- | --- |
-| `whatsapp:read` | `GET /v1/whatsapp/*`, `/v1/me`, `/v1/usage` | Required for `/mcp/whatsapp`. |
-| `whatsapp:write` | `POST /v1/whatsapp/pair`, sends, reactions, edits, deletes, read receipts, groups, and unlink | Allows write tools when granted to the WhatsApp MCP resource. |
+| `mcp:whatsapp` | Not used by REST API keys. | Required for the `/mcp/whatsapp` resource. |
+| `whatsapp:read` | WhatsApp read endpoints, `/v1/me`, and `/v1/usage`. | Allows read tools when granted to the WhatsApp MCP resource. |
+| `whatsapp:write` | `POST /v1/whatsapp/pair`, sends, reactions, edits, deletes, read receipts, groups, and unlink. | Allows write tools when granted to the WhatsApp MCP resource. |
 | `webhooks:manage` | `/v1/webhooks/*` | Not used by the WhatsApp MCP server. |
 
 <Tip>

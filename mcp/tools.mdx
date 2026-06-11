@@ -7,7 +7,7 @@ The WhatsApp MCP server exposes a compact set of agent-facing tools. Older low-l
 
 Every MCP grant includes `mcp:whatsapp` for the selected connection. Read grants add `whatsapp:read` for inbox, message, contact, group, and media tools. Write grants add `whatsapp:write` for send, reaction, edit, delete, mark-read, group, and participant-update tools.
 
-Read tools return compact records by default: IDs, names, conversation titles, counts, timestamps, and short previews. Use opt-in fields such as `include_details`, `include_participants`, or `include_message_body` only when the task needs full participant lists or full message text.
+Read tools return compact records by default: IDs, names, conversation titles, counts, timestamps, and short previews. Use opt-in fields such as `include_details`, `include_participants`, or `include_message_body` only when the task needs full participant lists or full message text. Detailed responses are still sanitized; raw media keys, hashes, direct paths, and transport URLs are not exposed through MCP read tools.
 
 ## Golden path for agents
 

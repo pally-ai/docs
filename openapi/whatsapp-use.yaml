@@ -76,6 +76,16 @@ paths:
       operationId: requestWhatsAppPairing
       parameters:
         - $ref: "#/components/parameters/ConnectionIdHeader"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                phone_number:
+                  type: string
+                  description: WhatsApp account phone number in international format. When set, pairing uses a link code instead of a QR code.
       responses:
         "202":
           description: Pairing request accepted.
@@ -642,8 +652,6 @@ components:
           type: string
         last_connected_at:
           type: string
-        connector:
-          type: string
         connector_ready:
           type: boolean
         connector_error:
@@ -653,8 +661,16 @@ components:
       properties:
         status:
           type: string
+          description: One of `requested`, `qr`, `code`, `paired`, or `failed`.
         qr:
           type: string
+          description: QR payload to render when pairing by scan.
+        code:
+          type: string
+          description: Link code (XXXX-XXXX) when pairing by phone number.
+        jid:
+          type: string
+          description: WhatsApp ID of the paired account, set once paired.
         error:
           type: string
     Conversation:

@@ -17,7 +17,8 @@ Use these tools first:
 | --- | --- | --- |
 | Check setup, pairing, scopes, or sync readiness | `whatsapp_get_started` | Follow `recommended_next_tools`. |
 | Triage unread chats or answer "what needs my attention?" | `whatsapp_inbox_overview` | `whatsapp_get_thread_context`, `whatsapp_list_messages`, or `whatsapp_mark_conversation_read`. |
-| The user names a person, phone number, group, or chat | `whatsapp_resolve_conversation` | `whatsapp_get_conversation`, `whatsapp_list_messages`, `whatsapp_send_message`, or `whatsapp_send_image`. |
+| The user names a person, phone number, group, or chat for reading or sending | `whatsapp_resolve_conversation` | `whatsapp_get_conversation`, `whatsapp_list_messages`, `whatsapp_send_message`, or `whatsapp_send_image`. |
+| The user asks for a person's phone number, direct chats, or shared groups | `whatsapp_resolve_person` | `whatsapp_query`, `whatsapp_resolve_conversation`, or `whatsapp_list_messages`. |
 | Understand a specific message | `whatsapp_get_thread_context` | `whatsapp_reply_to_message`, `whatsapp_react_to_message`, or `whatsapp_mark_conversation_read` if the user asks. |
 | Send an image | `whatsapp_resolve_conversation` | `whatsapp_send_image` with the resolved `conversation_id` or `contact_id`. |
 | Search message text | `whatsapp_search_messages` | `whatsapp_get_thread_context` for any matching message that needs context. |
@@ -39,6 +40,7 @@ WhatsApp pairing and account management happen in the dashboard, not through nor
 | --- | --- | --- | --- |
 | `whatsapp_inbox_overview` | `whatsapp:read` | None | First triage tool for unread counts, actionable chats, unread mentions, sync state, and recommended follow-ups. |
 | `whatsapp_resolve_conversation` | `whatsapp:read` | `query` | Resolve a name, phone number, group title, chat name, contact, or JID into ranked compact conversation/contact targets, including contact-only targets that do not have an existing conversation yet, such as `Pally Test`. |
+| `whatsapp_resolve_person` | `whatsapp:read` | `query` | Resolve a person, contact, phone number, or JID into compact identity candidates, known phone/LID identifiers, direct chats, and shared groups. Use for questions like "what is their phone number?" or "what groups am I in with them?" |
 | `whatsapp_query` | `whatsapp:read` | `entity` | Canonical read-only query tool for counts, rankings, contact lookup, retained message search, and exploratory questions over synced state. Compact by default. It is not SQL. |
 | `whatsapp_list_conversations` | `whatsapp:read` | None | Canonical list/filter tool for browsing compact conversations by unread, archived, direct/group, mute, search, and sort state. |
 | `whatsapp_get_conversation` | `whatsapp:read` | `conversation_id` or `chat_jid` | Get one compact conversation with unread state and latest-message preview. Use `include_participants` or `include_details` only when needed. |

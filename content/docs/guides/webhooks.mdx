@@ -1,0 +1,70 @@
+---
+title: Receive webhooks
+description: Create a webhook endpoint and verify signed WhatsApp events.
+---
+
+Webhook endpoints send WhatsApp events to your application. Use an API key with `webhooks:manage`.
+
+## Create an endpoint
+
+Subscribe to every event with `["*"]`, or pass specific event types.
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
+  -H "Content-Type: application/json" \
+  "$WHATSAPP_USE_BASE_URL/v1/webhooks/endpoints" \
+  -d '{
+    "url": "https://example.com/webhooks/whatsapp-use",
+    "description": "Production webhook",
+    "event_types": ["*"],
+    "all_accounts": true,
+    "enabled": true
+  }'
+```
+
+The response includes a `secret`. Store it when you create the endpoint. The secret is shown only on create and rotate responses.
+
+## Event shape
+
+Each delivery is JSON and includes the event type, connection ID, payload, and occurrence time:
+
+```json
+{
+  "id": "evt_20260608093000",
+  "type": "whatsapp.message.received",
+  "connection_id": "conn_123",
+  "payload": {
+    "message": {
+      "message_id": "msg_wa_inbound_01",
+      "conversation_id": "conv_15555550123",
+      "chat_jid": "15555550123@s.whatsapp.net",
+      "direction": "incoming",
+      "content_type": "text",
+      "body": "Can you send the invoice?"
+    }
+  },
+  "occurred_at": "2026-06-08T09:30:00Z"
+}
+```
+
+## Signature headers
+
+Verify the signature before processing a delivery.
+
+| Header | Description |
+| --- | --- |
+| `X-Whatsapp-Use-Event-Id` | Event ID. |
+| `X-Whatsapp-Use-Event-Type` | Event type. |
+| `X-Whatsapp-Use-Timestamp` | Unix timestamp used for signing. |
+| `X-Whatsapp-Use-Signature` | Signature in the form `t=<timestamp>,v1=<signature>`. |
+
+## Test an endpoint
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
+  "$WHATSAPP_USE_BASE_URL/v1/webhooks/endpoints/we_123/test"
+```
+
+The test endpoint sends a signed sample `whatsapp.message.received` event to the saved URL.

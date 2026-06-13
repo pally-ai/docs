@@ -1,0 +1,75 @@
+---
+title: MCP OAuth
+description: Understand how OAuth grants bind MCP clients to WhatsApp connections.
+---
+
+MCP clients authenticate through OAuth 2.1 with PKCE. WhatsApp Use publishes protected-resource metadata for the WhatsApp MCP server.
+
+## Metadata
+
+| Resource | Metadata |
+| --- | --- |
+| `/mcp/whatsapp` | `/.well-known/oauth-protected-resource/mcp/whatsapp` |
+
+The authorization server metadata is available at:
+
+```text
+/.well-known/oauth-authorization-server
+```
+
+## Authorization flow
+
+<Steps>
+<Step>
+### Discover metadata
+
+The MCP client reads protected-resource metadata for `/mcp/whatsapp`.
+</Step>
+<Step>
+### Register or identify the client
+
+Clients can use dynamic client registration at `POST /oauth/register`.
+</Step>
+<Step>
+### Open authorization URL
+
+The client starts `GET /oauth/authorize` with PKCE and the target resource.
+</Step>
+<Step>
+### Sign in
+
+WhatsApp Use authenticates the user, redirects to the dashboard authorization handoff, and asks the user to choose an organization connection.
+</Step>
+<Step>
+### Exchange code
+
+The client exchanges the authorization code at `POST /oauth/token`.
+</Step>
+<Step>
+### Use access token
+
+The client calls `/mcp/whatsapp` with the OAuth bearer token.
+</Step>
+</Steps>
+
+## Grant binding
+
+Each grant binds:
+
+- User and organization.
+- MCP resource.
+- Scopes.
+- Client ID and client name.
+- Connection ID.
+
+OAuth can provision the hidden runtime credential used by the selected connection. You do not need a visible REST API key for MCP, but the selected connection must be paired before authorization can complete.
+
+## Scopes
+
+The WhatsApp MCP resource requires `whatsapp:read` for read tools. Write tools require the grant to include `whatsapp:write`.
+
+Dashboard-created MCP testing grants default to read-only. Enable write tools in the dashboard only for clients that should be allowed to pair, send messages, create groups, update group participants, mark messages read, or unlink the connected WhatsApp device.
+
+<Callout type="warn">
+  Do not paste dashboard API keys into MCP clients. MCP uses OAuth tokens, and the backend rejects API-key authentication for MCP.
+</Callout>

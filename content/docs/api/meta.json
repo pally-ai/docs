@@ -1,0 +1,16 @@
+{
+  "title": "REST API",
+  "icon": "Braces",
+  "root": true,
+  "pages": [
+    "---API basics---",
+    "authentication",
+    "connections",
+    "scopes",
+    "errors",
+    "pagination",
+    "media",
+    "---Reference---",
+    "...reference"
+  ]
+}

@@ -1,0 +1,33 @@
+name = "whatsapp-use-docs"
+main = ".open-next/worker.js"
+compatibility_date = "2026-06-04"
+compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
+
+workers_dev = true
+
+# Production custom domain. CUTOVER PREREQUISITE: docs.whatsapp-use.com is
+# currently a proxied CNAME pointing at Mintlify. Before the first master
+# deploy that binds this, delete that existing `docs` DNS record in the
+# Cloudflare dashboard — otherwise wrangler's custom-domain creation conflicts
+# with it. Once removed, deploying creates the record + cert automatically.
+routes = [
+  { pattern = "docs.whatsapp-use.com", custom_domain = true },
+]
+
+[assets]
+directory = ".open-next/assets"
+binding = "ASSETS"
+
+[[services]]
+binding = "WORKER_SELF_REFERENCE"
+service = "whatsapp-use-docs"
+
+[env.staging]
+name = "whatsapp-use-docs-staging"
+routes = [
+  { pattern = "docs-staging.whatsapp-use.com", custom_domain = true },
+]
+
+[[env.staging.services]]
+binding = "WORKER_SELF_REFERENCE"
+service = "whatsapp-use-docs-staging"

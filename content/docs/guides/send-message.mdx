@@ -1,0 +1,38 @@
+---
+title: Send a message
+description: Send a text message with the REST API.
+---
+
+Use `POST /v1/whatsapp/messages/send` with an API key that has `whatsapp:write`.
+
+Send to a known WhatsApp contact JID:
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
+  -H "Content-Type: application/json" \
+  "$WHATSAPP_USE_BASE_URL/v1/whatsapp/messages/send" \
+  -d '{
+    "contact_id": "14155550123@s.whatsapp.net",
+    "text": "Hello from WhatsApp Use"
+  }'
+```
+
+Send into an existing conversation:
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
+  -H "Content-Type: application/json" \
+  "$WHATSAPP_USE_BASE_URL/v1/whatsapp/messages/send" \
+  -d '{
+    "conversation_id": "conv_14155550123swhatsappnet",
+    "text": "Following up here"
+  }'
+```
+
+Use `conversation_id` when you are replying inside a conversation returned by `GET /v1/whatsapp/conversations` or `GET /v1/whatsapp/sync`.
+
+<Callout type="info">
+  Reactions, edits, deletes, read receipts, group creation, and participant updates are available in the REST API reference. Keep this guide focused on the first text send.
+</Callout>

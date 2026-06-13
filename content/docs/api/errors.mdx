@@ -1,0 +1,41 @@
+---
+title: Errors
+description: Handle REST API errors from WhatsApp Use.
+---
+
+Most JSON errors use this shape:
+
+```json
+{
+  "error": "invalid api key"
+}
+```
+
+Media downloads can return plain text errors because the success response is a binary stream.
+
+## Common statuses
+
+| Status | Meaning |
+| --- | --- |
+| `400` | Invalid JSON or missing required fields. |
+| `401` | Missing, invalid, revoked, or incorrectly scoped API key. |
+| `402` | Active subscription required. |
+| `404` | Resource not found. |
+| `409` | State conflict, such as setup that must happen first. |
+| `502` | Upstream WhatsApp connection error. |
+| `503` | WhatsApp connection is not ready. |
+
+## Pattern
+
+Handle errors by status first, then display the `error` string when present.
+
+```ts
+if (!response.ok) {
+  const text = await response.text();
+  let message = text;
+  try {
+    message = JSON.parse(text).error ?? text;
+  } catch {}
+  throw new Error(message);
+}
+```

@@ -1,0 +1,58 @@
+---
+title: Pair WhatsApp
+description: Start pairing, render the QR code, and confirm connection status.
+---
+
+Pairing connects one WhatsApp account to one WhatsApp Use connection. The account owner must scan the QR code from WhatsApp on their phone.
+
+## Recommended flow
+
+<Steps>
+<Step>
+### Create or select a connection
+
+In the dashboard, create a WhatsApp connection for the organization. If you use the API, make sure your API key can access the target connection.
+</Step>
+<Step>
+### Start pairing
+
+Call `POST /v1/whatsapp/pair` with an API key that has `whatsapp:write`.
+</Step>
+<Step>
+### Render the QR code
+
+Poll `GET /v1/whatsapp/pair/status` and render the returned `qr` value.
+</Step>
+<Step>
+### Confirm the connection
+
+Call `GET /v1/whatsapp/status` until `paired` is `true`.
+</Step>
+</Steps>
+
+## Start pairing
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
+  "$WHATSAPP_USE_BASE_URL/v1/whatsapp/pair"
+```
+
+## Poll pairing status
+
+```bash
+curl -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
+  "$WHATSAPP_USE_BASE_URL/v1/whatsapp/pair/status"
+```
+
+The pairing status response includes:
+
+| Field | Meaning |
+| --- | --- |
+| `status` | Pairing state, such as `qr`, `paired`, or `failed`. |
+| `qr` | QR payload to render when `status` is `qr`. |
+| `error` | Error text when pairing fails. |
+
+<Callout type="info">
+  MCP OAuth does not show the WhatsApp QR code. Pair from the platform dashboard or your own product UI, then authorize MCP clients after the connection exists.
+</Callout>

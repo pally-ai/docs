@@ -1,0 +1,28 @@
+---
+title: Connections
+description: Understand how REST requests select a WhatsApp connection.
+---
+
+A connection is one paired WhatsApp account. Pairing, messages, media, and groups all happen through the selected connection.
+
+## One connection per request
+
+Every REST request to `/v1/whatsapp/*` resolves to exactly one connection:
+
+- If your API key allows one connection, WhatsApp Use uses it automatically.
+- If your API key allows multiple connections, include `X-WhatsApp-Use-Connection-Id`.
+
+```bash
+curl \
+  -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
+  -H "X-WhatsApp-Use-Connection-Id: conn_abc123" \
+  "$WHATSAPP_USE_BASE_URL/v1/whatsapp/status"
+```
+
+## Multiple WhatsApp accounts
+
+Create multiple connections when your organization manages multiple WhatsApp accounts. Keep API keys scoped to the right set of connections, then pass the connection ID at request time.
+
+## Connection lifecycle
+
+Pair a connection before using it for messages, media, or groups. If the connection is not paired or connected, WhatsApp endpoints return an error your application can surface to the user.

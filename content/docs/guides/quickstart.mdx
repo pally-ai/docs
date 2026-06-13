@@ -1,0 +1,84 @@
+---
+title: API quickstart
+description: Create an API key, pair WhatsApp, and send your first REST API message.
+---
+
+Use this guide when you are calling WhatsApp Use from your own code. For AI clients, use the [MCP quickstart](/mcp/quickstart).
+
+## Before you begin
+
+You need:
+
+- A WhatsApp Use account and organization.
+- A WhatsApp account available on your phone.
+- An API key with `whatsapp:read` and `whatsapp:write`.
+
+## 1. Set your API key
+
+```bash
+export WHATSAPP_USE_BASE_URL="https://api.whatsapp-use.com"
+export WHATSAPP_USE_API_KEY="pa_live_..."
+```
+
+## 2. Check the key
+
+```bash
+curl -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
+  "$WHATSAPP_USE_BASE_URL/v1/me"
+```
+
+The response includes your organization, scopes, connection access, and public endpoint paths.
+
+## 3. Pair WhatsApp
+
+Start pairing:
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
+  "$WHATSAPP_USE_BASE_URL/v1/whatsapp/pair"
+```
+
+Poll pairing state:
+
+```bash
+curl -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
+  "$WHATSAPP_USE_BASE_URL/v1/whatsapp/pair/status"
+```
+
+Render the returned `qr` value in your UI, or pair from the WhatsApp Use dashboard.
+
+## 4. Confirm connection status
+
+```bash
+curl -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
+  "$WHATSAPP_USE_BASE_URL/v1/whatsapp/status"
+```
+
+When pairing succeeds, `paired` is `true`. When the hosted connection is active, `connected` is `true`.
+
+## 5. Send a text message
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer $WHATSAPP_USE_API_KEY" \
+  -H "Content-Type: application/json" \
+  "$WHATSAPP_USE_BASE_URL/v1/whatsapp/messages/send" \
+  -d '{
+    "contact_id": "14155550123@s.whatsapp.net",
+    "text": "Hello from WhatsApp Use"
+  }'
+```
+
+Use `conversation_id` instead of `contact_id` when sending into an existing conversation returned by `GET /v1/whatsapp/conversations` or `GET /v1/whatsapp/sync`.
+
+## Next steps
+
+<Cards>
+  <Card title="Pairing guide" icon={<QrCode />} href="/guides/pair-whatsapp">
+    Build a dashboard or CLI pairing flow.
+  </Card>
+  <Card title="Authentication and scopes" icon={<KeyRound />} href="/api/authentication">
+    Choose API key scopes and connection selection.
+  </Card>
+</Cards>

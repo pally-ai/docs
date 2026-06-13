@@ -1,0 +1,12 @@
+node_modules/
+.next/
+.open-next/
+.source/
+.wrangler/
+next-env.d.ts
+tsconfig.tsbuildinfo
+
+# generated from openapi/whatsapp-use.yaml by scripts/generate-api-docs.mjs
+content/docs/api/reference/
+# openapi/whatsapp-use.json is generated but committed so the build/typecheck
+# always has it (it is bundled into the worker by lib/openapi.ts)

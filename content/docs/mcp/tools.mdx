@@ -1,0 +1,122 @@
+---
+title: MCP tools
+description: Reference for WhatsApp tools exposed by the remote MCP server.
+---
+
+The WhatsApp MCP server exposes a compact set of agent-facing tools. Older low-level tools may still be callable for compatibility, but agents should follow the tools below.
+
+Every MCP grant includes `mcp:whatsapp` for the selected connection. Read grants add `whatsapp:read` for inbox, message, contact, group, and media tools. Write grants add `whatsapp:write` for send, reaction, edit, delete, mark-read, group, and participant-update tools.
+
+Read tools return compact records by default: IDs, names, conversation titles, counts, timestamps, and short previews. Use opt-in fields such as `include_details`, `include_participants`, or `include_message_body` only when the task needs full participant lists or full message text. Detailed responses are still sanitized; raw media keys, hashes, direct paths, and transport URLs are not exposed through MCP read tools.
+
+## Golden path for agents
+
+Use these tools first:
+
+| User intent | Start with | Then use |
+| --- | --- | --- |
+| Check setup, pairing, scopes, or sync readiness | `whatsapp_get_started` | Follow `recommended_next_tools`. |
+| Triage unread chats or answer "what needs my attention?" | `whatsapp_inbox_overview` | `whatsapp_get_thread_context`, `whatsapp_list_messages`, or `whatsapp_mark_conversation_read`. |
+| The user names a person, phone number, group, or chat for reading or sending | `whatsapp_resolve_conversation` | `whatsapp_get_conversation`, `whatsapp_list_messages`, `whatsapp_send_message`, or `whatsapp_send_image`. |
+| The user asks for a person's phone number, direct chats, or shared groups | `whatsapp_resolve_person` | `whatsapp_query`, `whatsapp_resolve_conversation`, or `whatsapp_list_messages`. |
+| Understand a specific message | `whatsapp_get_thread_context` | `whatsapp_reply_to_message`, `whatsapp_react_to_message`, or `whatsapp_mark_conversation_read` if the user asks. |
+| Send an image | `whatsapp_resolve_conversation` | `whatsapp_send_image` with the resolved `conversation_id` or `contact_id`. |
+| Search message text | `whatsapp_search_messages` | `whatsapp_get_thread_context` for any matching message that needs context. |
+| Ask counts, rankings, or exploratory questions | `whatsapp_query` | Use compact filters such as `participant_query`, `sort_by`, `fields`, `from_me`, or `direction`. |
+
+Use write tools only when the user clearly asks for the action.
+
+## Setup
+
+| Tool | Required scope | Description |
+| --- | --- | --- |
+| `whatsapp_get_started` | `mcp:whatsapp` | First-call tool for setup, pairing, scope, and sync readiness. Returns recommended next tools. |
+
+WhatsApp pairing and account management happen in the dashboard, not through normal agent tools.
+
+## Inbox and conversation discovery
+
+| Tool | Required scope | Required arguments | Description |
+| --- | --- | --- | --- |
+| `whatsapp_inbox_overview` | `whatsapp:read` | None | First triage tool for unread counts, actionable chats, unread mentions, sync state, and recommended follow-ups. |
+| `whatsapp_resolve_conversation` | `whatsapp:read` | `query` | Resolve a name, phone number, group title, chat name, contact, or JID into ranked compact conversation/contact targets, including contact-only targets that do not have an existing conversation yet, such as `Pally Test`. |
+| `whatsapp_resolve_person` | `whatsapp:read` | `query` | Resolve a person, contact, phone number, or JID into compact identity candidates, known phone/LID identifiers, direct chats, and shared groups. Use for questions like "what is their phone number?" or "what groups am I in with them?" |
+| `whatsapp_query` | `whatsapp:read` | `entity` | Canonical read-only query tool for counts, rankings, contact lookup, retained message search, and exploratory questions over synced state. Compact by default. It is not SQL. |
+| `whatsapp_list_conversations` | `whatsapp:read` | None | Canonical list/filter tool for browsing compact conversations by unread, archived, direct/group, mute, search, and sort state. |
+| `whatsapp_get_conversation` | `whatsapp:read` | `conversation_id` or `chat_jid` | Get one compact conversation with unread state and latest-message preview. Use `include_participants` or `include_details` only when needed. |
+
+## Messages and context
+
+| Tool | Required scope | Required arguments | Description |
+| --- | --- | --- | --- |
+| `whatsapp_list_messages` | `whatsapp:read` | `conversation_id` | List compact message previews in a known conversation. Use `whatsapp_resolve_conversation` first for named chats. |
+| `whatsapp_search_messages` | `whatsapp:read` | `query` | Search message contents by text, sender, conversation, and time range. Returns compact hits by default. |
+| `whatsapp_get_thread_context` | `whatsapp:read` | `message_id` or `wa_message_id` | Canonical context tool for a specific message. Includes compact nearby messages and reply-chain context. |
+| `whatsapp_list_mentions` | `whatsapp:read` | None | List messages that mention the paired user, or a specific mentioned JID. |
+| `whatsapp_list_shared_items` | `whatsapp:read` | None | List compact files, images, locations, contact cards, polls, events, calls, and pinned/kept-message events. |
+| `whatsapp_list_important_messages` | `whatsapp:read` | None | List compact starred, pinned-in-chat, and kept-in-chat messages. |
+| `whatsapp_get_group_info` | `whatsapp:read` | `conversation_id` or `chat_jid` | Get compact group metadata. Use `include_participants` or `include_details` only when needed. |
+| `whatsapp_download_media` | `whatsapp:read` | `message_id` | Download small media as base64 plus MIME metadata. Larger files should be streamed from `GET /v1/whatsapp/media/{message_id}`. |
+
+## Open-ended read-only queries
+
+Use `whatsapp_query` when the user asks analytical or exploratory questions over synced WhatsApp state and there is no single named chat target yet.
+
+Examples:
+
+```json
+{ "entity": "conversations", "kind": "group", "aggregate": "count" }
+```
+
+```json
+{ "entity": "conversations", "kind": "group", "participant_query": "Haz" }
+```
+
+```json
+{ "entity": "conversations", "kind": "group", "sort_by": "participant_count", "fields": ["title", "participant_count"], "limit": 10 }
+```
+
+```json
+{ "entity": "messages", "conversation_id": "conv_...", "from_me": true, "aggregate": "count" }
+```
+
+```json
+{ "entity": "contacts", "query": "Haz", "named_only": true }
+```
+
+Use `whatsapp_resolve_conversation` instead when the agent needs a target for reading, sending, or media actions.
+
+## Messages
+
+| Tool | Required scope | Required arguments | Description |
+| --- | --- | --- | --- |
+| `whatsapp_send_message` | `whatsapp:write` | `text` plus `conversation_id` or `contact_id` | Send a WhatsApp text message. Resolve ambiguous recipients first with `whatsapp_resolve_conversation`. |
+| `whatsapp_reply_to_message` | `whatsapp:write` | `message_id`, `text`, plus `conversation_id` or `to` | Reply to a specific WhatsApp message. |
+| `whatsapp_send_image` | `whatsapp:write` | `image_base64`, `mime_type`, plus `conversation_id`, `contact_id`, or `to` | Send a WhatsApp image with an optional caption. |
+| `whatsapp_react_to_message` | `whatsapp:write` | `message_id` plus `conversation_id` or `to` | React to a message. Empty `emoji` clears the reaction. |
+| `whatsapp_edit_message` | `whatsapp:write` | `message_id`, `text`, plus `conversation_id` or `to` | Edit a sent message. |
+| `whatsapp_delete_message` | `whatsapp:write` | `message_id` plus `conversation_id` or `to` | Delete or revoke a sent message. |
+| `whatsapp_mark_conversation_read` | `whatsapp:write` | `conversation_id` or `chat_jid` | Mark all unread messages in a conversation as read. |
+
+## Groups
+
+| Tool | Required scope | Required arguments | Description |
+| --- | --- | --- | --- |
+| `whatsapp_create_group` | `whatsapp:write` | `name`, `participants` | Create a WhatsApp group. Optional `announce` and `locked`. |
+| `whatsapp_update_group_participants` | `whatsapp:write` | `group_jid`, `participants`, `action` | Add, remove, promote, or demote group participants. |
+
+## Example tool request
+
+```json
+{
+  "name": "whatsapp_send_message",
+  "arguments": {
+    "contact_id": "14155550123@s.whatsapp.net",
+    "text": "Hello from an MCP client"
+  }
+}
+```
+
+<Callout type="info">
+  Tool availability depends on the OAuth grant scopes and the selected connection.
+</Callout>

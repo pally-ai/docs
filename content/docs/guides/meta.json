@@ -1,0 +1,16 @@
+{
+  "title": "Guides",
+  "icon": "BookOpen",
+  "root": true,
+  "pages": [
+    "---Start here---",
+    "index",
+    "concepts",
+    "---Common tasks---",
+    "quickstart",
+    "pair-whatsapp",
+    "send-message",
+    "webhooks",
+    "ai-readable-docs"
+  ]
+}

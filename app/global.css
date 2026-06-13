@@ -1,0 +1,13 @@
+@import 'tailwindcss';
+@import 'fumadocs-ui/css/neutral.css';
+@import 'fumadocs-ui/css/preset.css';
+@import 'fumadocs-openapi/css/preset.css';
+
+/* WhatsApp Use brand palette (matches the platform and marketing site) */
+:root {
+  --color-fd-primary: hsl(148 86% 31%); /* #0B944B */
+}
+
+.dark {
+  --color-fd-primary: hsl(148 60% 52%);
+}

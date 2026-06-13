@@ -1,0 +1,96 @@
+---
+title: Install MCP
+description: Connect an MCP client to the WhatsApp Use remote MCP server.
+---
+
+Use WhatsApp Use as a hosted MCP server from an MCP client that supports remote Streamable HTTP over HTTPS.
+
+## Client commands
+
+Use the command for your MCP client:
+
+<Tabs items={['Claude Code', 'Codex']}>
+  <Tab value="Claude Code">
+    ```bash
+    claude mcp add --transport http whatsapp-use https://api.whatsapp-use.com/mcp/whatsapp
+    ```
+
+    To make the server available across Claude Code projects on your machine, add `--scope user`.
+  </Tab>
+  <Tab value="Codex">
+    ```bash
+    codex mcp add whatsapp-use --url https://api.whatsapp-use.com/mcp/whatsapp
+    ```
+
+    If Codex asks you to authenticate later, run:
+
+    ```bash
+    codex mcp login whatsapp-use
+    ```
+  </Tab>
+</Tabs>
+
+Your client opens a browser to complete OAuth when it needs authorization.
+
+## Generic setup
+
+Use these values in any MCP client that supports remote Streamable HTTP over HTTPS:
+
+| Setting | Value |
+| --- | --- |
+| Name | `whatsapp-use` |
+| Transport | Streamable HTTP over HTTPS |
+| URL | `https://api.whatsapp-use.com/mcp/whatsapp` |
+| Authentication | OAuth |
+
+If your client uses JSON configuration, the server entry usually looks like this:
+
+```json
+{
+  "mcpServers": {
+    "whatsapp-use": {
+      "type": "http",
+      "url": "https://api.whatsapp-use.com/mcp/whatsapp"
+    }
+  }
+}
+```
+
+## Install flow
+
+<Steps>
+<Step>
+### Add the remote MCP server
+
+Add the WhatsApp Use URL to your MCP client with HTTP transport.
+</Step>
+<Step>
+### Complete OAuth
+
+Your MCP client opens a browser. Sign in, choose your organization, and authorize the client.
+</Step>
+<Step>
+### Pair WhatsApp first if needed
+
+If your organization has no connection, use the dashboard handoff to connect a WhatsApp account before authorizing MCP. You do not need to create a REST API key for MCP.
+</Step>
+<Step>
+### Use tools
+
+After authorization, your MCP client can call WhatsApp tools for the selected connection.
+</Step>
+</Steps>
+
+## QR pairing
+
+The install command only adds the MCP server to your client. Pairing happens in the platform dashboard because it requires account access, organization selection, and a WhatsApp QR scan.
+
+If you already have a paired connection, OAuth can authorize the MCP client immediately. If you do not, connect and pair WhatsApp from the dashboard handoff, then return to the MCP authorization.
+
+## Recommended agent rule
+
+Most MCP clients read tool descriptions. Some also use server instructions returned during MCP initialization. Add this rule to your agent or project instructions when your client supports custom instructions:
+
+```text
+Use whatsapp_get_started first if setup, scopes, or sync readiness are unclear. Pairing and account management happen in the dashboard. Use whatsapp_inbox_overview first for unread chats, mentions, or "what needs my attention?" Use whatsapp_resolve_conversation before reading, sending, or sending media when the user names a person, phone number, group, or chat. Use whatsapp_resolve_person for person-level questions such as phone number lookup, direct chats, or shared groups. Read tools return compact IDs, names, titles, counts, timestamps, and previews by default; request include_details, include_participants, or include_message_body only when needed. Detailed MCP read responses are still sanitized; raw media keys, hashes, direct paths, and transport URLs are not exposed. Use whatsapp_query for open-ended read-only questions over synced state, including counts, rankings, contact lookup, participant filters, and scoped message counts with conversation_id plus from_me or direction; it is not SQL. Use whatsapp_send_image for images. Never send, edit, delete, mark read, create groups, update participants, or unlink unless the user clearly asks for that action.
+```

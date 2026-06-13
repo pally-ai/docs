@@ -1,0 +1,45 @@
+{
+  "name": "whatsapp-use-docs",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "predev": "npm run generate:api",
+    "build": "next build",
+    "prebuild": "npm run generate:api",
+    "generate:api": "node scripts/generate-api-docs.mjs",
+    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "start": "npm run preview",
+    "deploy:cloudflare": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "typecheck": "tsc --noEmit",
+    "postinstall": "fumadocs-mdx"
+  },
+  "dependencies": {
+    "@fuma-translate/react": "^1.0.2",
+    "@radix-ui/react-popover": "^1.1.16",
+    "@tailwindcss/postcss": "^4.3.1",
+    "class-variance-authority": "^0.7.1",
+    "fumadocs-core": "^16.10.2",
+    "fumadocs-mdx": "^15.0.12",
+    "fumadocs-openapi": "^11.0.2",
+    "fumadocs-ui": "^16.10.2",
+    "lucide-react": "^1.18.0",
+    "next": "16.2.9",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
+    "shiki": "^4.2.0",
+    "tailwind-merge": "^3.6.0",
+    "tailwindcss": "^4.3.1"
+  },
+  "devDependencies": {
+    "@opennextjs/cloudflare": "^1.19.11",
+    "@types/mdx": "^2.0.13",
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "typescript": "^5.9.2",
+    "wrangler": "^4.100.0",
+    "yaml": "^2.7.0"
+  }
+}

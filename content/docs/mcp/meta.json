@@ -1,0 +1,13 @@
+{
+  "title": "MCP",
+  "icon": "Bot",
+  "root": true,
+  "pages": [
+    "---Remote MCP---",
+    "quickstart",
+    "overview",
+    "install",
+    "oauth",
+    "tools"
+  ]
+}

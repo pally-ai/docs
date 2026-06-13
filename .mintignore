@@ -5,3 +5,16 @@
 # Draft content
 drafts/
 *.draft.mdx
+
+# Fumadocs site (replacement docs app; Mintlify must ignore it until cutover)
+app/
+components/
+content/
+lib/
+scripts/
+public/
+.next/
+.open-next/
+.source/
+plans/
+

@@ -1,0 +1,59 @@
+---
+title: MCP overview
+description: Use WhatsApp Use as a hosted MCP server for AI clients.
+---
+
+WhatsApp Use exposes one hosted MCP server:
+
+```text
+https://api.whatsapp-use.com/mcp/whatsapp
+```
+
+Use MCP when an AI client needs WhatsApp tools. Use the REST API when you are writing application code.
+
+| Interface | Authentication | Best for |
+| --- | --- | --- |
+| Remote MCP | OAuth | AI clients such as Claude, Codex, and other MCP-capable agents. |
+| REST API | API key | App backends, jobs, internal tools, and webhook management. |
+
+## What the server can do
+
+- Check setup, pairing, scopes, and sync readiness.
+- Resolve people, phone numbers, groups, and chat titles.
+- Triage unread and actionable conversations.
+- Search retained conversations, contacts, and messages.
+- Read messages, mentions, shared items, and group info.
+- Send text and images when write access is granted.
+- React, edit, delete, mark read, create groups, update participants, and unlink when explicitly requested.
+
+## Agent guidance
+
+The server returns instructions during MCP initialization and tool descriptions during `tools/list`.
+
+The default flow is:
+
+<Steps>
+<Step>
+### Check readiness
+
+Call `whatsapp_get_started` when setup, pairing, scopes, or sync state is unclear.
+</Step>
+<Step>
+### Resolve the target
+
+Call `whatsapp_resolve_conversation` when the user names a person, phone number, group, or chat.
+</Step>
+<Step>
+### Use the task tool
+
+Read with list/context tools, answer open-ended read-only questions with `whatsapp_query`, and send images with `whatsapp_send_image`.
+</Step>
+</Steps>
+
+<Callout type="warn">
+  Agents should not send, edit, delete, mark read, create groups, update participants, or unlink unless the user clearly asks for that action.
+</Callout>
+
+## Next step
+
+Start with the [MCP quickstart](/mcp/quickstart).
